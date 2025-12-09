@@ -1,0 +1,138 @@
+[
+  {
+    "id": "scenario_1",
+    "name": "Kịch bản 1: Viêm hô hấp cấp (Trẻ em/Người già)",
+    "description": "Đơn thuốc phổ biến gồm kháng sinh và thuốc ho, kèm lời dặn chi tiết.",
+    "type": "prescription",
+    "data": {
+      "patient_name": "Nguyễn Văn An",
+      "age": 65,
+      "diagnosis": "J20 - Viêm phế quản cấp",
+      "diagnosis_explanation": "Đường thở bị viêm nhiễm do vi khuẩn hoặc virus, gây ho, đờm và khó thở.",
+      "test_results": [
+        {
+          "name": "Công thức máu",
+          "result": "WBC tăng nhẹ (11.5 G/L)",
+          "note": "Có dấu hiệu nhiễm khuẩn"
+        },
+        {
+          "name": "X-Quang Phổi",
+          "result": "Rốn phổi đậm",
+          "note": "Theo dõi viêm"
+        }
+      ],
+      "medicines": [
+        {
+          "name": "Augmentin 1g",
+          "dosage": "1g",
+          "quantity": "14 viên",
+          "instructions": "Uống 1 viên sáng, 1 viên tối sau ăn no.",
+          "times": ["08:00", "20:00"],
+          "notes": "Kháng sinh. Tuyệt đối không bỏ dở giữa chừng."
+        },
+        {
+          "name": "Acemuc 200mg",
+          "dosage": "200mg",
+          "quantity": "10 gói",
+          "instructions": "Pha uống khi có đờm, ngày 2 lần.",
+          "times": ["09:00", "19:00"],
+          "notes": "Thuốc long đờm."
+        }
+      ],
+      "advice": "Giữ ấm cổ, uống nhiều nước ấm. Tái khám nếu sốt cao trên 38.5 độ liên tục.",
+      "revisit_date": "16/12/2025"
+    }
+  },
+  {
+    "id": "scenario_2",
+    "name": "Kịch bản 2: Bệnh mãn tính (Tiểu đường + Huyết áp)",
+    "description": "Đơn thuốc phức tạp, nhiều loại thuốc, kèm kết quả xét nghiệm máu.",
+    "type": "chronic",
+    "data": {
+      "patient_name": "Lê Thị Bảy",
+      "age": 72,
+      "diagnosis": "E11 - Đái tháo đường type 2 | I10 - Tăng huyết áp vô căn",
+      "diagnosis_explanation": "Bác bị tiểu đường và huyết áp cao. Cần kiểm soát đường huyết và huyết áp để tránh biến chứng tim mạch.",
+      "test_results": [
+        {
+          "name": "Glucose đói",
+          "result": "8.5 mmol/L",
+          "note": "Cao hơn bình thường (3.9-6.4)"
+        },
+        { "name": "HbA1c", "result": "7.2%", "note": "Kiểm soát chưa tốt" },
+        {
+          "name": "Huyết áp",
+          "result": "150/90 mmHg",
+          "note": "Tăng huyết áp độ 1"
+        }
+      ],
+      "medicines": [
+        {
+          "name": "Glucophage XR 750mg",
+          "dosage": "750mg",
+          "quantity": "30 viên",
+          "instructions": "Uống 1 viên sau ăn tối.",
+          "times": ["19:00"],
+          "notes": "Thuốc tiểu đường. Nuốt chửng viên thuốc, không nhai."
+        },
+        {
+          "name": "Amlodipin 5mg",
+          "dosage": "5mg",
+          "quantity": "30 viên",
+          "instructions": "Uống 1 viên vào buổi sáng.",
+          "times": ["07:00"],
+          "notes": "Thuốc huyết áp. Uống đúng giờ mỗi ngày."
+        },
+        {
+          "name": "Atorvastatin 10mg",
+          "dosage": "10mg",
+          "quantity": "30 viên",
+          "instructions": "Uống 1 viên trước khi ngủ.",
+          "times": ["21:00"],
+          "notes": "Thuốc mỡ máu."
+        }
+      ],
+      "advice": "Kiêng ngọt, giảm mặn. Tập thể dục nhẹ nhàng 30 phút mỗi ngày.",
+      "revisit_date": "09/01/2026"
+    }
+  },
+  {
+    "id": "scenario_3",
+    "name": "Kịch bản 3: Chấn thương chỉnh hình (Sau bó bột)",
+    "description": "Đơn thuốc giảm đau, chống phù nề kèm kết quả X-Quang.",
+    "type": "injury",
+    "data": {
+      "patient_name": "Trần Văn Cường",
+      "age": 45,
+      "diagnosis": "S82 - Gãy kín 1/3 dưới xương quay",
+      "diagnosis_explanation": "Xương tay đang trong quá trình liền. Cần hạn chế vận động mạnh.",
+      "test_results": [
+        {
+          "name": "X-Quang Cẳng tay",
+          "result": "Đường gãy di lệch ít, can xương chưa hình thành rõ.",
+          "note": "Tiếp tục cố định bột."
+        }
+      ],
+      "medicines": [
+        {
+          "name": "Ultracet (Paracetamol + Tramadol)",
+          "dosage": "37.5mg/325mg",
+          "quantity": "10 viên",
+          "instructions": "Uống 1 viên khi đau nhiều, cách nhau ít nhất 6 tiếng.",
+          "times": [],
+          "notes": "Thuốc giảm đau mạnh. Có thể gây buồn ngủ."
+        },
+        {
+          "name": "Alpha Choay",
+          "dosage": "Viên nén",
+          "quantity": "20 viên",
+          "instructions": "Ngậm dưới lưỡi 2 viên/lần, ngày 2 lần.",
+          "times": ["08:00", "18:00"],
+          "notes": "Giảm phù nề, tan máu bầm."
+        }
+      ],
+      "advice": "Kê cao tay khi ngủ. Tập cử động các ngón tay để tránh cứng khớp.",
+      "revisit_date": "23/12/2025"
+    }
+  }
+]

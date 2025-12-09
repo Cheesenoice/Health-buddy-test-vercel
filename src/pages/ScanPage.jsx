@@ -127,6 +127,14 @@ const ScanPage = () => {
           "Phân tích & Tạo lịch"
         )}
       </button>
+
+      <div className="mt-8 w-full max-w-2xl mx-auto text-center">
+        <h1 className="text-xl font-semibold mb-2">Quét đơn / Scan</h1>
+        <p className="text-sm text-gray-600">
+          Tại đây bạn có thể tải ảnh hoặc quét đơn thuốc. Tính năng đang phát
+          triển.
+        </p>
+      </div>
     </div>
   );
 };

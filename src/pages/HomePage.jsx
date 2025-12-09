@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useApp } from "../context/AppContext";
-import { Mic } from "lucide-react";
 import { GeminiService } from "../services/gemini";
-import ChatModal from "../components/ChatModal";
 
 // Import new components
 import EmptyState from "../components/home/EmptyState";
@@ -17,7 +15,6 @@ const HomePage = () => {
   const [selectedDrug, setSelectedDrug] = useState(null);
   const [drugInfo, setDrugInfo] = useState(null);
   const [loadingInfo, setLoadingInfo] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // State for Question Modal
   const [questionModal, setQuestionModal] = useState({
@@ -126,20 +123,10 @@ const HomePage = () => {
         <SuggestedQuestions
           questions={prescription.suggested_questions}
           onQuestionClick={(q) => handleQuestionClick(q, false)}
-          onRecordClick={() => setIsChatOpen(true)}
+          onRecordClick={() =>
+            window.dispatchEvent(new Event("open-chat-modal"))
+          }
         />
-
-        {/* Floating Chat Button - Positioned relative to the mobile frame */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center pointer-events-none z-40">
-          <div className="w-full max-w-md relative h-screen">
-            <button
-              onClick={() => setIsChatOpen(true)}
-              className="absolute bottom-24 right-4 bg-zalo-primary text-white p-4 rounded-full shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors pointer-events-auto"
-            >
-              <Mic size={24} />
-            </button>
-          </div>
-        </div>
 
         {/* Drug Info Modal */}
         <DrugInfoModal
@@ -161,8 +148,6 @@ const HomePage = () => {
           onQuestionClick={(q) => handleQuestionClick(q, true)}
           onBack={questionHistory.length > 0 ? handleBack : null}
         />
-
-        <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       </div>
     </div>
   );

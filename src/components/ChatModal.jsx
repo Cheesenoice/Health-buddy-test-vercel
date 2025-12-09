@@ -82,9 +82,17 @@ const ChatModal = ({ isOpen, onClose }) => {
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-zalo-primary">
               <Bot size={24} />
             </div>
-            <div>
-              <h3 className="font-bold text-gray-800">Bác sĩ AI</h3>
-              <p className="text-xs text-green-500 flex items-center gap-1">
+            {/* Changed: make title and tag inline, keep status below */}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-gray-800">Bác sĩ AI</h3>
+                <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full shadow-sm border border-blue-100">
+                  <span className="text-[10px] font-bold text-zalo-primary">
+                    VNPT SmartBot • ChatBot AI
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-green-500 flex items-center gap-1 mt-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span> Đang
                 trực tuyến
               </p>

@@ -34,8 +34,7 @@
           "name": "Acemuc 200mg",
           "dosage": "200mg",
           "quantity": "10 gói",
-          "instructions": "Pha uống khi có đờm, ngày 2 lần.",
-          "times": ["09:00", "19:00"],
+          "instructions": "Pha uống khi có đờm.",
           "notes": "Thuốc long đờm."
         }
       ],

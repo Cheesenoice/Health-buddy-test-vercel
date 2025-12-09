@@ -21,12 +21,25 @@ const DrugInfoModal = ({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-white w-full sm:w-[400px] h-[85vh] sm:h-auto sm:rounded-3xl rounded-t-3xl flex flex-col shadow-2xl animate-slide-up">
         <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-3xl">
-          <div>
-            <h3 className="font-bold text-lg text-gray-800">
-              {selectedDrug.name}
-            </h3>
-            <p className="text-sm text-gray-500">{selectedDrug.dosage}</p>
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-3">
+                <h3 className="font-bold text-lg text-gray-800">
+                  {selectedDrug.name}
+                </h3>
+                <div className="flex items-center gap-1.5 bg-white/60 px-2 py-1 rounded-lg border border-blue-100">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-[10px] font-bold text-zalo-primary">
+                    VNPT SmartBot • ChatBot AI
+                  </span>
+                </div>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                {selectedDrug.dosage}
+              </p>
+            </div>
           </div>
+
           <button
             onClick={onClose}
             className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"

@@ -45,7 +45,7 @@ const SuggestedQuestions = ({ questions, onQuestionClick, onRecordClick }) => {
         {/* Record Button (First) */}
         <div
           onClick={onRecordClick}
-          className="w-[120px] flex-none bg-red-50 p-3 rounded-2xl border border-red-100 border-dashed flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
+          className="w-[120px] flex-none bg-red-50 p-3 rounded-2xl border border-red-100 border-dashed flex flex-col items-center justify-center text-center h-[140px] snap-start active:scale-95 transition-transform cursor-pointer"
         >
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mb-2 text-red-500 shadow-sm">
             <Mic size={20} />
@@ -56,7 +56,7 @@ const SuggestedQuestions = ({ questions, onQuestionClick, onRecordClick }) => {
         {/* Add More Button (Second) */}
         <div
           onClick={handleLoadMore}
-          className="w-[120px] flex-none bg-blue-50 p-3 rounded-2xl border border-blue-100 border-dashed flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
+          className="w-[4] flex-none bg-blue-50 p-3 rounded-2xl border border-blue-100 border-dashed flex flex-col items-center justify-center text-center h-[140px] snap-start active:scale-95 transition-transform cursor-pointer"
         >
           {loadingMore ? (
             <div className="w-6 h-6 border-2 border-zalo-primary border-t-transparent rounded-full animate-spin"></div>
@@ -77,7 +77,7 @@ const SuggestedQuestions = ({ questions, onQuestionClick, onRecordClick }) => {
           <div
             key={i}
             onClick={() => onQuestionClick(q)}
-            className="w-[160px] flex-none bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
+            className="w-[160px] flex-none bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center h-[140px] snap-start active:scale-95 transition-transform cursor-pointer"
           >
             <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center mb-2 text-lg">
               🤔

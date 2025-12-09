@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Home, ScanLine, Calendar, User, FileText } from "lucide-react";
+import { Home, ScanLine, Calendar, User, ClipboardPlus } from "lucide-react";
 import clsx from "clsx";
 
 const Layout = () => {
@@ -11,7 +11,7 @@ const Layout = () => {
     { icon: Home, label: "Trang chủ", path: "/" },
     { icon: Calendar, label: "Lịch thuốc", path: "/calendar" },
     { icon: ScanLine, label: "Quét đơn", path: "/scan" },
-    { icon: FileText, label: "Lịch sử", path: "/history" },
+    { icon: ClipboardPlus, label: "Lịch sử", path: "/history" },
     { icon: User, label: "Cá nhân", path: "/profile" },
   ];
 

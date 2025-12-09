@@ -127,11 +127,17 @@ const QuestionModal = ({
                     {renderContent(answer)}
 
                     {/* VNPT SmartVoice Branding */}
-                    <div className="flex items-center gap-1.5 mt-3 bg-white/60 w-fit px-2 py-1 rounded-lg border border-blue-100">
+                    <div className="flex flex-row items-center gap-1.5 mt-3 bg-white/60 w-fit px-2 py-1 rounded-lg border border-blue-100">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                       <Volume2 size={12} className="text-zalo-primary" />
                       <span className="text-[10px] font-bold text-zalo-primary">
                         VNPT SmartVoice
+                      </span>
+                    </div>
+                    <div className="flex flex-row items-center gap-1.5 mt-3 bg-white/60 w-fit px-2 py-1 rounded-lg border border-blue-100">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-[10px] font-bold text-zalo-primary">
+                        VNPT SmartBot • ChatBot AI
                       </span>
                     </div>
                   </div>

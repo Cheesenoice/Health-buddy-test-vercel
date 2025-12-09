@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import ScanPage from "./pages/ScanPage";
+import LabResultsPage from "./pages/LabResultsPage";
 
 // Placeholder pages
 const CalendarPage = () => (
@@ -25,6 +26,7 @@ function App() {
           <Route path="scan" element={<ScanPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="/lab-results" element={<LabResultsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

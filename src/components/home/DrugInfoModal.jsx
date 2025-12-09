@@ -1,7 +1,20 @@
 import React from "react";
-import { X, Info, Clock, AlertCircle, Activity } from "lucide-react";
+import {
+  X,
+  Info,
+  Clock,
+  AlertCircle,
+  Activity,
+  HelpCircle,
+} from "lucide-react";
 
-const DrugInfoModal = ({ selectedDrug, onClose, loadingInfo, drugInfo }) => {
+const DrugInfoModal = ({
+  selectedDrug,
+  onClose,
+  loadingInfo,
+  drugInfo,
+  onQuestionClick,
+}) => {
   if (!selectedDrug) return null;
 
   return (
@@ -83,6 +96,30 @@ const DrugInfoModal = ({ selectedDrug, onClose, loadingInfo, drugInfo }) => {
                   </p>
                 </div>
               )}
+
+              {/* Suggested Questions */}
+              {drugInfo.suggested_questions &&
+                drugInfo.suggested_questions.length > 0 && (
+                  <div className="pt-4 border-t border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 mb-3 flex items-center gap-1">
+                      <HelpCircle size={14} /> CÂU HỎI THƯỜNG GẶP
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {drugInfo.suggested_questions.map((q, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            onClose();
+                            onQuestionClick(q);
+                          }}
+                          className="bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold shadow-sm active:scale-95 transition-transform hover:bg-gray-50 hover:border-zalo-primary hover:text-zalo-primary text-left"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </>
           ) : (
             <div className="text-center text-gray-500 py-10">

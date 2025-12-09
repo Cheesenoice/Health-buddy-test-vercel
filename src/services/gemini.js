@@ -28,21 +28,21 @@ export const GeminiService = {
     const currentDate = new Date().toLocaleString("vi-VN");
 
     const prompt = `
-      You are an AI backend for "HealFlow", a medical app for the elderly.
-      Analyze the input text (OCR from prescription, lab result, or doctor note) and generate a Dynamic UI JSON structure.
+      Bạn là backend AI cho "HealFlow", một ứng dụng y tế cho người cao tuổi.
+      Phân tích văn bản đầu vào (OCR từ đơn thuốc, kết quả xét nghiệm, hoặc ghi chú bác sĩ) và tạo ra một cấu trúc UI động dưới dạng JSON.
       
-      Input Text: "${promptText}"
-      Current Date: "${currentDate}"
+      Văn bản đầu vào: "${promptText}"
+      Ngày hiện tại: "${currentDate}"
 
-      Rules:
-      1. Do NOT assume a fixed schema. Adapt the UI modules based on the content.
-      2. If it's a Prescription: 
-         - Use a 'medication_schedule' module.
-         - INTELLIGENTLY GROUP medicines into sessions: "morning" (Sáng), "noon" (Trưa), "evening" (Chiều/Tối), "as_needed" (Khi cần/Sốt/Đau).
-         - Calculate if the prescription is valid based on "Current Date" vs "Prescription Date" + "Duration".
-      3. If it's a Lab Result: Use an 'info_list' module.
-      4. If it's General Advice: Use a 'text_block' module.
-      5. Always provide a 'summary_card' at the top.
+      Quy tắc:
+      1. Không giả định một schema cố định. Điều chỉnh modules UI dựa trên nội dung.
+      2. Nếu là đơn thuốc (Prescription): 
+         - Sử dụng module 'medication_schedule'.
+         - NHÓM thuốc một cách THÔNG MINH theo các session: "morning" (Sáng), "noon" (Trưa), "evening" (Chiều/Tối), "as_needed" (Khi cần/Sốt/Đau).
+         - Tính xem đơn thuốc còn hiệu lực hay không dựa trên "Current Date" so với "Prescription Date" + "Duration".
+      3. Nếu là kết quả xét nghiệm (Lab Result): dùng module 'info_list'.
+      4. Nếu là lời khuyên chung: dùng module 'text_block'.
+      5. Luôn cung cấp 'summary_card' ở đầu.
 
       Required JSON Structure:
       {
@@ -73,11 +73,11 @@ export const GeminiService = {
             // If type is text_block, data is just a string.
           }
         ],
-        "suggested_questions": ["Question 1?", "Question 2?"],
+        "suggested_questions": ["Question 1?", "Question 2?", "Question 3?", "Question 4?"] (min 4, max 4),
         "speech_text": "A warm greeting and summary for Text-to-Speech."
       }
       
-      Only return the JSON object, no markdown formatting.
+      Chỉ trả về đối tượng JSON, không kèm định dạng markdown.
     `;
 
     try {
@@ -107,16 +107,17 @@ export const GeminiService = {
     }
 
     const prompt = `
-      Provide a detailed but simple guide for the drug "${drugName}" for a "${patientContext}".
-      Return a valid JSON object with the following structure:
+      Cung cấp hướng dẫn chi tiết nhưng đơn giản cho thuốc "${drugName}" dành cho "${patientContext}".
+      Trả về một đối tượng JSON hợp lệ với cấu trúc sau:
       {
         "summary": "A simple one-sentence explanation of what this drug does.",
         "usage_guide": "Step-by-step guide on how to take it (e.g., before/after food, with water).",
         "side_effects": ["Common side effect 1", "Common side effect 2"],
         "lifestyle_advice": "One tip for lifestyle changes while taking this drug (e.g., drink water, avoid alcohol).",
-        "serious_warning": "One important warning (e.g., stop if rash appears)."
+        "serious_warning": "One important warning (e.g., stop if rash appears).",
+        "suggested_questions": ["Question 1 related to this drug?", "Question 2?", "Question 3?", "Question 4?"]
       }
-      Only return the JSON object, no markdown formatting.
+      Chỉ trả về đối tượng JSON, không kèm định dạng markdown.
     `;
 
     try {
@@ -135,6 +136,151 @@ export const GeminiService = {
   },
 
   /**
+   * Generates more suggested questions based on context.
+   */
+  async generateMoreQuestions(currentQuestions, context) {
+    if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+      return [
+        "Tôi nên ăn gì?",
+        "Tôi nên kiêng gì?",
+        "Bệnh này bao lâu thì khỏi?",
+        "Thuốc này uống lúc nào?",
+      ];
+    }
+
+    const prompt = `
+      Ngữ cảnh: ${context}
+      Câu hỏi hiện tại: ${JSON.stringify(currentQuestions)}
+      Tạo đúng 4 câu hỏi mới, ngắn gọn, đơn giản, phù hợp cho người lớn tuổi về đơn thuốc hoặc chẩn đoán, không trùng với các câu hỏi hiện tại.
+      Trả về một mảng JSON gồm 4 chuỗi câu hỏi.
+      Chỉ trả về mảng JSON, không thêm gì khác.
+    `;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      const jsonString = text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+      let arr = JSON.parse(jsonString);
+      // Đảm bảo luôn trả về 4 câu hỏi
+      if (!Array.isArray(arr) || arr.length !== 4) {
+        arr = [
+          "Tôi nên ăn gì?",
+          "Tôi nên kiêng gì?",
+          "Bệnh này bao lâu thì khỏi?",
+          "Thuốc này uống lúc nào?",
+        ];
+      }
+      return arr;
+    } catch (error) {
+      console.error("Error generating questions:", error);
+      return [
+        "Tôi nên ăn gì?",
+        "Tôi nên kiêng gì?",
+        "Bệnh này bao lâu thì khỏi?",
+        "Thuốc này uống lúc nào?",
+      ];
+    }
+  },
+
+  /**
+   * Analyzes lab results to provide a summary.
+   */
+  async analyzeLabResults(results) {
+    if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+      return {
+        summary: "Kết quả xét nghiệm của bác có một số chỉ số cần lưu ý.",
+        highlights: [
+          { title: "Lưu ý", content: "Vui lòng tham khảo ý kiến bác sĩ." },
+        ],
+      };
+    }
+
+    const prompt = `
+      Phân tích các kết quả xét nghiệm sau cho bệnh nhân cao tuổi: ${JSON.stringify(
+        results
+      )}
+      Trả về một đối tượng JSON bằng tiếng Việt với:
+      {
+        "summary": "Tóm tắt ngắn gọn (tối đa 2 câu) về tình trạng sức khỏe chung bằng tiếng Việt, giọng văn ân cần, dễ hiểu.",
+        "highlights": [
+          { "title": "Tin tốt", "content": "Chỉ số nào tốt", "type": "green" },
+          { "title": "Cần chú ý", "content": "Chỉ số nào bất thường", "type": "red" }
+        ]
+      }
+      Chỉ trả về JSON.
+    `;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      const jsonString = text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error("Error analyzing lab results:", error);
+      return { summary: "Không thể phân tích kết quả.", highlights: [] };
+    }
+  },
+
+  /**
+   * Explains a specific lab result indicator.
+   */
+  async explainLabResult(testName, testValue, context) {
+    if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+      return {
+        explanation: `Chỉ số ${testName} của bác là ${testValue}.`,
+        suggested_questions: [
+          "Chỉ số này có nguy hiểm không?",
+          "Tôi cần ăn kiêng gì?",
+        ],
+      };
+    }
+
+    const prompt = `
+      Giải thích chỉ số xét nghiệm '${testName}: ${testValue}' cho người cao tuổi.
+      Ngữ cảnh: ${context}.
+      
+      Yêu cầu:
+      1. Cực kỳ ngắn gọn (tối đa 3 dòng).
+      2. Dùng ngôn ngữ bình dân, dễ hiểu.
+      3. Sử dụng ký hiệu so sánh trực quan (ví dụ: Kết quả ${testValue} > Mức an toàn 100).
+      4. Kết luận ngay là Tốt hay Xấu.
+      
+      Return a JSON object:
+      {
+        "explanation": "Markdown text...",
+        "explanation": "Markdown text...",
+        "suggested_questions": ["Question 1 related to this result?", "Question 2?", "Question 3?", "Question 4?"] min 4, max 4
+      }
+      Chỉ trả về JSON.
+    `;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      const jsonString = text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error("Error explaining lab result:", error);
+      return {
+        explanation: "Xin lỗi, không thể giải thích chỉ số này lúc này.",
+        suggested_questions: [],
+      };
+    }
+  },
+
+  /**
    * Chat with the AI assistant.
    * @param {string} message
    * @param {Array} history
@@ -142,28 +288,63 @@ export const GeminiService = {
    */
   async chat(message, history = [], context = "") {
     if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
-      return "I am a demo bot. Please configure your Gemini API Key to chat for real.";
+      return {
+        answer:
+          "I am a demo bot. Please configure your Gemini API Key to chat for real.",
+        suggested_questions: ["How to configure API Key?", "Is this free?"],
+      };
     }
 
     let finalMessage = message;
-    if (history.length === 0 && context) {
-      finalMessage = `Context: ${context}\n\nUser Question: ${message}`;
+    const systemInstruction = `
+      Bạn là trợ lý y tế ảo 'HealFlow' dành cho người lớn tuổi. 
+      Ngữ cảnh: ${context}
+      
+      Yêu cầu:
+      1. Trả lời bằng Tiếng Việt, ngắn gọn, dễ hiểu, ân cần.
+      2. Trả về định dạng JSON:
+      {
+        "answer": "Nội dung trả lời (Markdown)...",
+        "suggested_questions": ["Câu hỏi gợi ý 1?", "Câu hỏi gợi ý 2?", "Câu hỏi gợi ý 3?", "Câu hỏi gợi ý 4?"] (Tối đa 4 câu)
+      }
+      Chỉ trả về JSON.
+    `;
+
+    if (history.length === 0) {
+      finalMessage = `${systemInstruction}\n\nUser Question: ${message}`;
+    } else {
+      finalMessage = `${systemInstruction}\n\nUser Question: ${message}`;
     }
 
     const chat = model.startChat({
       history: history,
       generationConfig: {
-        maxOutputTokens: 500,
+        maxOutputTokens: 1000,
       },
     });
 
     try {
       const result = await chat.sendMessage(finalMessage);
       const response = await result.response;
-      return response.text();
+      const text = response.text();
+      try {
+        const jsonString = text
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
+        return JSON.parse(jsonString);
+      } catch (e) {
+        return {
+          answer: text,
+          suggested_questions: [],
+        };
+      }
     } catch (error) {
       console.error("Chat error:", error);
-      return "Xin lỗi, bác sĩ ảo đang bận. Bác vui lòng thử lại sau.";
+      return {
+        answer: "Xin lỗi, bác sĩ ảo đang bận. Bác vui lòng thử lại sau.",
+        suggested_questions: [],
+      };
     }
   },
 };
@@ -243,4 +424,8 @@ const mockDrugInfo = (name) => ({
   side_effects: ["Buồn nôn", "Mệt mỏi", "Đau đầu nhẹ"],
   lifestyle_advice: "Nên nghỉ ngơi nhiều, tránh làm việc nặng.",
   serious_warning: "Ngưng thuốc ngay nếu thấy nổi mẩn đỏ hoặc khó thở.",
+  suggested_questions: [
+    "Thuốc này có hại dạ dày không?",
+    "Uống thuốc này có buồn ngủ không?",
+  ],
 });

@@ -8,6 +8,8 @@ import {
   FileText,
   Database,
   ChevronDown,
+  ArrowLeft,
+  Camera,
 } from "lucide-react";
 import demoScenarios from "../data/demo_scenarios.json";
 
@@ -41,19 +43,34 @@ const ScanPage = () => {
   };
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="bg-white p-6 rounded-xl shadow-sm text-center space-y-4">
-        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto text-zalo-primary">
-          <ScanLine size={32} />
-        </div>
-        <h2 className="text-xl font-bold text-gray-800">Quét đơn thuốc</h2>
-        <p className="text-gray-500 text-sm">
-          Chụp ảnh hoặc dán nội dung đơn thuốc để AI phân tích và tạo lịch uống
-          thuốc tự động.
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4 relative">
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-4 p-2 bg-white/20 rounded-full text-white backdrop-blur-sm"
+      >
+        <ArrowLeft size={24} />
+      </button>
+
+      <div className="w-full max-w-md aspect-[3/4] border-2 border-white/30 rounded-3xl relative overflow-hidden flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent animate-scan"></div>
+        <Camera size={48} className="text-white/50" />
+        <p className="absolute bottom-10 text-white font-medium text-center w-full">
+          Di chuyển camera vào vùng mã QR
+          <br />
+          hoặc đơn thuốc
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="mt-8 flex gap-4">
+        <button className="px-6 py-3 bg-white text-black font-bold rounded-full">
+          Chụp ảnh
+        </button>
+        <button className="px-6 py-3 bg-white/20 text-white font-bold rounded-full backdrop-blur-sm">
+          Tải ảnh lên
+        </button>
+      </div>
+
+      <div className="space-y-3 mt-6 w-full max-w-2xl">
         <div className="flex justify-between items-center">
           <label className="block text-sm font-medium text-gray-700">
             Nội dung (Text/JSON)

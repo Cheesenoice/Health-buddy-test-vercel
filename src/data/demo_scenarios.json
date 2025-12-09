@@ -43,10 +43,11 @@
       "revisit_date": "16/12/2025"
     }
   },
+
   {
     "id": "scenario_2",
     "name": "Kịch bản 2: Bệnh mãn tính (Tiểu đường + Huyết áp)",
-    "description": "Đơn thuốc phức tạp, nhiều loại thuốc, kèm kết quả xét nghiệm máu.",
+    "description": "Đơn thuốc phức tạp, nhiều loại thuốc, kèm xét nghiệm máu.",
     "type": "chronic",
     "data": {
       "patient_name": "Lê Thị Bảy",
@@ -54,17 +55,9 @@
       "diagnosis": "E11 - Đái tháo đường type 2 | I10 - Tăng huyết áp vô căn",
       "diagnosis_explanation": "Bác bị tiểu đường và huyết áp cao. Cần kiểm soát đường huyết và huyết áp để tránh biến chứng tim mạch.",
       "test_results": [
-        {
-          "name": "Glucose đói",
-          "result": "8.5 mmol/L",
-          "note": "Cao hơn bình thường (3.9-6.4)"
-        },
-        { "name": "HbA1c", "result": "7.2%", "note": "Kiểm soát chưa tốt" },
-        {
-          "name": "Huyết áp",
-          "result": "150/90 mmHg",
-          "note": "Tăng huyết áp độ 1"
-        }
+        { "name": "Glucose đói", "result": "8.5 mmol/L", "note": "Cao" },
+        { "name": "HbA1c", "result": "7.2%", "note": "Chưa tốt" },
+        { "name": "Huyết áp", "result": "150/90 mmHg", "note": "Tăng huyết áp" }
       ],
       "medicines": [
         {
@@ -73,66 +66,259 @@
           "quantity": "30 viên",
           "instructions": "Uống 1 viên sau ăn tối.",
           "times": ["19:00"],
-          "notes": "Thuốc tiểu đường. Nuốt chửng viên thuốc, không nhai."
+          "notes": "Thuốc tiểu đường."
         },
         {
           "name": "Amlodipin 5mg",
           "dosage": "5mg",
           "quantity": "30 viên",
-          "instructions": "Uống 1 viên vào buổi sáng.",
+          "instructions": "Uống 1 viên buổi sáng.",
           "times": ["07:00"],
-          "notes": "Thuốc huyết áp. Uống đúng giờ mỗi ngày."
+          "notes": "Thuốc huyết áp."
         },
         {
           "name": "Atorvastatin 10mg",
           "dosage": "10mg",
           "quantity": "30 viên",
-          "instructions": "Uống 1 viên trước khi ngủ.",
+          "instructions": "Uống 1 viên trước ngủ.",
           "times": ["21:00"],
           "notes": "Thuốc mỡ máu."
         }
       ],
-      "advice": "Kiêng ngọt, giảm mặn. Tập thể dục nhẹ nhàng 30 phút mỗi ngày.",
+      "advice": "Kiêng đường, giảm mặn. Tập thể dục 30 phút mỗi ngày.",
       "revisit_date": "09/01/2026"
     }
   },
+
   {
     "id": "scenario_3",
     "name": "Kịch bản 3: Chấn thương chỉnh hình (Sau bó bột)",
-    "description": "Đơn thuốc giảm đau, chống phù nề kèm kết quả X-Quang.",
+    "description": "Đơn thuốc giảm đau + chống phù nề sau gãy xương.",
     "type": "injury",
     "data": {
       "patient_name": "Trần Văn Cường",
       "age": 45,
       "diagnosis": "S82 - Gãy kín 1/3 dưới xương quay",
-      "diagnosis_explanation": "Xương tay đang trong quá trình liền. Cần hạn chế vận động mạnh.",
+      "diagnosis_explanation": "Xương đang liền, cần hạn chế vận động mạnh.",
       "test_results": [
         {
           "name": "X-Quang Cẳng tay",
-          "result": "Đường gãy di lệch ít, can xương chưa hình thành rõ.",
-          "note": "Tiếp tục cố định bột."
+          "result": "Đường gãy di lệch ít, can xương chưa rõ",
+          "note": "Tiếp tục cố định."
         }
       ],
       "medicines": [
         {
-          "name": "Ultracet (Paracetamol + Tramadol)",
+          "name": "Ultracet",
           "dosage": "37.5mg/325mg",
           "quantity": "10 viên",
-          "instructions": "Uống 1 viên khi đau nhiều, cách nhau ít nhất 6 tiếng.",
+          "instructions": "Uống 1 viên khi đau.",
           "times": [],
-          "notes": "Thuốc giảm đau mạnh. Có thể gây buồn ngủ."
+          "notes": "Có thể buồn ngủ."
         },
         {
           "name": "Alpha Choay",
-          "dosage": "Viên nén",
+          "dosage": "viên",
           "quantity": "20 viên",
-          "instructions": "Ngậm dưới lưỡi 2 viên/lần, ngày 2 lần.",
+          "instructions": "Ngậm 2 viên/lần, ngày 2 lần.",
           "times": ["08:00", "18:00"],
-          "notes": "Giảm phù nề, tan máu bầm."
+          "notes": "Giảm sưng."
         }
       ],
-      "advice": "Kê cao tay khi ngủ. Tập cử động các ngón tay để tránh cứng khớp.",
+      "advice": "Kê cao tay, vận động nhẹ các ngón.",
       "revisit_date": "23/12/2025"
+    }
+  },
+
+  {
+    "id": "scenario_4",
+    "name": "Kịch bản 4: Suy tim cấp + phù phổi",
+    "description": "Một trong các ca cấp cứu thường gặp. Rất nhiều giấy tờ: điện tim, X-quang, đơn thuốc đa nhóm, chỉ định nhập viện.",
+    "type": "emergency",
+    "data": {
+      "patient_name": "Phạm Văn Thông",
+      "age": 68,
+      "diagnosis": "I50.1 - Suy tim trái cấp | J81 - Phù phổi",
+      "diagnosis_explanation": "Tim bơm máu kém → ứ dịch phổi → khó thở dữ dội.",
+      "exam_documents": {
+        "ECG": {
+          "result": "Nhịp nhanh xoang 110 bpm, ST chênh nhẹ V4-V6",
+          "note": "Theo dõi thiếu máu cơ tim."
+        },
+        "Chest_Xray": {
+          "result": "Bóng tim to, mờ lan tỏa 2 phế trường",
+          "note": "Phù phổi cấp."
+        },
+        "BNP": {
+          "result": "1850 pg/mL",
+          "note": "Tăng rất cao → suy tim nặng."
+        },
+        "SpO2": {
+          "result": "88% khi thở khí phòng",
+          "note": "Thiếu oxy nặng."
+        }
+      },
+      "medicines": [
+        {
+          "name": "Furosemide tiêm",
+          "dosage": "20mg",
+          "quantity": "3 ống",
+          "instructions": "Tiêm tĩnh mạch 2 lần/ngày.",
+          "times": ["08:00", "20:00"],
+          "notes": "Thuốc lợi tiểu mạnh."
+        },
+        {
+          "name": "Nitroglycerin",
+          "dosage": "0.5mg",
+          "quantity": "5 viên ngậm",
+          "instructions": "Ngậm dưới lưỡi khi khó thở.",
+          "times": [],
+          "notes": "Giãn mạch, giảm gánh nặng tim."
+        },
+        {
+          "name": "Bisoprolol 2.5mg",
+          "dosage": "2.5mg",
+          "quantity": "14 viên",
+          "instructions": "1 viên buổi sáng.",
+          "times": ["07:00"],
+          "notes": "Giảm nhịp tim."
+        },
+        {
+          "name": "Spironolactone 25mg",
+          "dosage": "25mg",
+          "quantity": "7 viên",
+          "instructions": "1 viên sau ăn.",
+          "times": ["12:00"],
+          "notes": "Giảm phù."
+        }
+      ],
+      "hospital_recommendation": "Khuyến cáo nhập viện vì nguy cơ tái diễn phù phổi rất cao.",
+      "advice": "Hạn chế muối tuyệt đối, theo dõi cân nặng mỗi ngày.",
+      "revisit_date": "12/12/2025"
+    }
+  },
+
+  {
+    "id": "scenario_5",
+    "name": "Kịch bản 5: Viêm tụy cấp do rượu",
+    "description": "Xét nghiệm siêu nhiều: men tụy, siêu âm bụng, CT scan, nước tiểu. Đơn thuốc nhiều nhóm.",
+    "type": "digestive_acute",
+    "data": {
+      "patient_name": "Đỗ Minh Hải",
+      "age": 39,
+      "diagnosis": "K85.2 - Viêm tụy cấp do rượu",
+      "diagnosis_explanation": "Rượu gây tổn thương tế bào tụy → viêm cấp → đau bụng dữ dội.",
+      "test_results": [
+        {
+          "name": "Amylase",
+          "result": "640 U/L",
+          "note": "Tăng rất cao"
+        },
+        {
+          "name": "Lipase",
+          "result": "1120 U/L",
+          "note": "Xác định viêm tụy"
+        },
+        {
+          "name": "CT Bụng",
+          "result": "Tụy phù nề, có dịch quanh tụy",
+          "note": "Không có hoại tử"
+        },
+        {
+          "name": "Siêu âm bụng",
+          "result": "Gan nhiễm mỡ độ 2",
+          "note": "Liên quan rượu"
+        }
+      ],
+      "medicines": [
+        {
+          "name": "Pantoprazole 40mg",
+          "dosage": "40mg",
+          "quantity": "14 viên",
+          "instructions": "1 viên buổi sáng trước ăn.",
+          "times": ["06:30"],
+          "notes": "Giảm dịch dạ dày."
+        },
+        {
+          "name": "Nospa 40mg",
+          "dosage": "40mg",
+          "quantity": "10 viên",
+          "instructions": "Khi đau quặn.",
+          "times": [],
+          "notes": "Giảm co thắt."
+        },
+        {
+          "name": "Oresol",
+          "dosage": "1 gói pha nước",
+          "quantity": "7 gói",
+          "instructions": "Uống chia 3 lần/ngày.",
+          "times": ["08:00", "14:00", "20:00"],
+          "notes": "Bù nước điện giải."
+        }
+      ],
+      "advice": "Tuyệt đối ngừng rượu. Ăn lỏng 2–3 ngày.",
+      "revisit_date": "18/12/2025"
+    }
+  },
+
+  {
+    "id": "scenario_6",
+    "name": "Kịch bản 6: Ung thư phổi – đang điều trị hóa trị",
+    "description": "Kịch bản cực nhiều giấy tờ: mô bệnh học, CT scan, PET/CT, xét nghiệm trước hóa trị, đơn thuốc chống nôn, giảm đau, theo dõi bạch cầu.",
+    "type": "oncology",
+    "data": {
+      "patient_name": "Nguyễn Thị Thu",
+      "age": 59,
+      "diagnosis": "C34.1 - Ung thư phổi thùy trên phải (giai đoạn IIIb)",
+      "diagnosis_explanation": "Khối u xâm lấn trung thất, chưa di căn xa. Bệnh đang hóa trị phác đồ Carbo–Taxol.",
+      "documents": {
+        "Biopsy": {
+          "result": "Carcinoma không tế bào nhỏ (NSCLC) – T4N2M0",
+          "note": "PD-L1 20%"
+        },
+        "CT_Chest": {
+          "result": "Khối u 4.5 cm, hạch trung thất 18mm",
+          "note": "Theo dõi đáp ứng sau 2 chu kỳ"
+        },
+        "PET_CT": {
+          "result": "Tăng hấp thu FDG vùng u và hạch trung thất",
+          "note": "Không thấy di căn xa"
+        },
+        "Pre_chemo_blood_test": {
+          "WBC": "3.1 G/L",
+          "Platelet": "140 G/L",
+          "Creatinine": "1.0 mg/dL",
+          "Liver enzymes": "AST 38, ALT 42"
+        }
+      },
+      "medicines": [
+        {
+          "name": "Ondansetron 8mg",
+          "dosage": "8mg",
+          "quantity": "6 viên",
+          "instructions": "1 viên trước truyền hóa chất 30 phút.",
+          "times": [],
+          "notes": "Chống nôn."
+        },
+        {
+          "name": "Neupogen",
+          "dosage": "300mcg",
+          "quantity": "3 ống",
+          "instructions": "Tiêm dưới da sau hóa trị 24 giờ.",
+          "times": [],
+          "notes": "Tăng bạch cầu."
+        },
+        {
+          "name": "Morphine SR 10mg",
+          "dosage": "10mg",
+          "quantity": "14 viên",
+          "instructions": "2 lần/ngày.",
+          "times": ["07:00", "19:00"],
+          "notes": "Giảm đau mức độ nặng."
+        }
+      ],
+      "advice": "Theo dõi sốt, viêm niêm mạc miệng, mệt nhiều. Nếu sốt >38°C phải đi cấp cứu.",
+      "revisit_date": "Chu kỳ hóa trị tiếp theo: 22/12/2025"
     }
   }
 ]

@@ -24,7 +24,9 @@ const HomePage = () => {
     isOpen: false,
     question: "",
     answer: "",
+    relatedQuestions: [],
   });
+  const [questionHistory, setQuestionHistory] = useState([]); // History stack
   const [answering, setAnswering] = useState(false);
 
   if (!prescription) {
@@ -48,25 +50,59 @@ const HomePage = () => {
     }
   };
 
-  const handleQuestionClick = async (question) => {
-    setQuestionModal({ isOpen: true, question, answer: null });
+  const handleQuestionClick = async (question, isRelated = false) => {
+    if (isRelated) {
+      // Push current state to history before updating
+      setQuestionHistory((prev) => [...prev, questionModal]);
+    } else {
+      // New conversation, clear history
+      setQuestionHistory([]);
+    }
+
+    setQuestionModal({
+      isOpen: true,
+      question,
+      answer: null,
+      relatedQuestions: [],
+    });
     setAnswering(true);
     try {
       const context = JSON.stringify(prescription);
-      const answer = await GeminiService.chat(
+      const result = await GeminiService.chat(
         question,
         [],
-        `Bạn là bác sĩ AI. Đây là đơn thuốc của bệnh nhân: ${context}. Hãy trả lời câu hỏi ngắn gọn, dễ hiểu cho người già.`
+        `Bạn là bác sĩ AI. Đây là đơn thuốc của bệnh nhân: ${context}.`
       );
-      setQuestionModal({ isOpen: true, question, answer });
+
+      if (typeof result === "object" && result.answer) {
+        setQuestionModal((prev) => ({
+          ...prev,
+          answer: result.answer,
+          relatedQuestions: result.suggested_questions || [],
+        }));
+      } else {
+        setQuestionModal((prev) => ({
+          ...prev,
+          answer: result,
+          relatedQuestions: [],
+        }));
+      }
     } catch (error) {
-      setQuestionModal({
-        isOpen: true,
-        question,
+      setQuestionModal((prev) => ({
+        ...prev,
         answer: "Xin lỗi, bác sĩ ảo đang bận. Vui lòng thử lại.",
-      });
+        relatedQuestions: [],
+      }));
     } finally {
       setAnswering(false);
+    }
+  };
+
+  const handleBack = () => {
+    if (questionHistory.length > 0) {
+      const previousState = questionHistory[questionHistory.length - 1];
+      setQuestionModal(previousState);
+      setQuestionHistory((prev) => prev.slice(0, -1));
     }
   };
 
@@ -89,7 +125,8 @@ const HomePage = () => {
         {/* Suggested Questions (Big Cards) */}
         <SuggestedQuestions
           questions={prescription.suggested_questions}
-          onQuestionClick={handleQuestionClick}
+          onQuestionClick={(q) => handleQuestionClick(q, false)}
+          onRecordClick={() => setIsChatOpen(true)}
         />
 
         {/* Floating Chat Button - Positioned relative to the mobile frame */}
@@ -110,6 +147,7 @@ const HomePage = () => {
           onClose={() => setSelectedDrug(null)}
           loadingInfo={loadingInfo}
           drugInfo={drugInfo}
+          onQuestionClick={(q) => handleQuestionClick(q, false)}
         />
 
         {/* Question Answer Modal */}
@@ -117,8 +155,11 @@ const HomePage = () => {
           isOpen={questionModal.isOpen}
           question={questionModal.question}
           answer={questionModal.answer}
+          relatedQuestions={questionModal.relatedQuestions}
           answering={answering}
           onClose={() => setQuestionModal({ ...questionModal, isOpen: false })}
+          onQuestionClick={(q) => handleQuestionClick(q, true)}
+          onBack={questionHistory.length > 0 ? handleBack : null}
         />
 
         <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />

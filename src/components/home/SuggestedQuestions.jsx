@@ -1,8 +1,35 @@
-import React from "react";
-import { HelpCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { HelpCircle, Plus, Mic } from "lucide-react";
+import { GeminiService } from "../../services/gemini";
+import { useApp } from "../../context/AppContext";
 
-const SuggestedQuestions = ({ questions, onQuestionClick }) => {
-  if (!questions || questions.length === 0) return null;
+const SuggestedQuestions = ({ questions, onQuestionClick, onRecordClick }) => {
+  const { prescription } = useApp();
+  const [localQuestions, setLocalQuestions] = useState(questions || []);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  useEffect(() => {
+    setLocalQuestions(questions || []);
+  }, [questions]);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const context = JSON.stringify(prescription);
+      const newQs = await GeminiService.generateMoreQuestions(
+        localQuestions,
+        context
+      );
+      // Insert new questions at the beginning
+      setLocalQuestions([...newQs, ...localQuestions]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  if (!localQuestions) return null;
 
   return (
     <div className="px-4 mb-8">
@@ -14,20 +41,51 @@ const SuggestedQuestions = ({ questions, onQuestionClick }) => {
         <span className="text-xs text-gray-500">AI gợi ý</span>
       </div>
 
-      <div className="flex overflow-x-auto gap-3 pb-4 no-scrollbar snap-x">
-        {questions.map((q, i) => (
+      <div className="grid grid-rows-2 grid-flow-col gap-3 overflow-x-auto pb-4 no-scrollbar snap-x auto-cols-min">
+        {/* Record Button (First) */}
+        <div
+          onClick={onRecordClick}
+          className="w-[120px] flex-none bg-red-50 p-3 rounded-2xl border border-red-100 border-dashed flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
+        >
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mb-2 text-red-500 shadow-sm">
+            <Mic size={20} />
+          </div>
+          <span className="text-xs font-bold text-red-500">Hỏi trực tiếp</span>
+        </div>
+
+        {/* Add More Button (Second) */}
+        <div
+          onClick={handleLoadMore}
+          className="w-[120px] flex-none bg-blue-50 p-3 rounded-2xl border border-blue-100 border-dashed flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
+        >
+          {loadingMore ? (
+            <div className="w-6 h-6 border-2 border-zalo-primary border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <>
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mb-2 text-zalo-primary shadow-sm">
+                <Plus size={20} />
+              </div>
+              <span className="text-xs font-bold text-zalo-primary">
+                Thêm câu hỏi
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Questions List */}
+        {localQuestions.map((q, i) => (
           <div
             key={i}
             onClick={() => onQuestionClick(q)}
-            className="min-w-[45%] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center h-40 snap-start active:scale-95 transition-transform cursor-pointer"
+            className="w-[160px] flex-none bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center h-[120px] snap-start active:scale-95 transition-transform cursor-pointer"
           >
-            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3 text-2xl">
+            <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center mb-2 text-lg">
               🤔
             </div>
-            <span className="text-sm font-bold text-gray-700 line-clamp-3 leading-tight">
+            <span className="text-xs font-bold text-gray-700 line-clamp-3 leading-tight">
               {q}
             </span>
-            <span className="text-[10px] text-zalo-primary mt-2 font-bold uppercase">
+            <span className="text-[9px] text-zalo-primary mt-1 font-bold uppercase">
               Chạm để nghe
             </span>
           </div>

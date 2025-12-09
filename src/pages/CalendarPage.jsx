@@ -15,13 +15,19 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [weekDays, setWeekDays] = useState([]);
 
-  // Generate 7 days centered on selected date
+  // Generate 7 days for the week (Monday -> Sunday) that contains selectedDate
   useEffect(() => {
     const days = [];
-    // Create a 7-day window centered on selectedDate
-    for (let i = -3; i <= 3; i++) {
-      const d = new Date(selectedDate);
-      d.setDate(selectedDate.getDate() + i);
+    const selected = new Date(selectedDate);
+    const day = selected.getDay(); // 0 (Sun) ... 6 (Sat)
+    // compute offset to Monday: if Sunday (0) go back 6 days, else 1 - day
+    const offsetToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(selected);
+    monday.setDate(selected.getDate() + offsetToMonday);
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
       days.push(d);
     }
     setWeekDays(days);
@@ -123,7 +129,7 @@ const CalendarPage = () => {
           <button
             onClick={() => {
               const d = new Date(selectedDate);
-              d.setDate(d.getDate() - 1);
+              d.setDate(d.getDate() - 7); // move one week back
               setSelectedDate(d);
             }}
             className="p-1 hover:bg-white/10 rounded-full"
@@ -136,7 +142,7 @@ const CalendarPage = () => {
           <button
             onClick={() => {
               const d = new Date(selectedDate);
-              d.setDate(d.getDate() + 1);
+              d.setDate(d.getDate() + 7); // move one week forward
               setSelectedDate(d);
             }}
             className="p-1 hover:bg-white/10 rounded-full"

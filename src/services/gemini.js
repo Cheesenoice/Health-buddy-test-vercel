@@ -28,7 +28,7 @@ export const GeminiService = {
     const currentDate = new Date().toLocaleString("vi-VN");
 
     const prompt = `
-      Bạn là backend AI cho "HealFlow", một ứng dụng y tế cho người cao tuổi.
+      Bạn là backend AI cho "HealthBuddy", một ứng dụng y tế cho người cao tuổi.
       Phân tích văn bản đầu vào (OCR từ đơn thuốc, kết quả xét nghiệm, hoặc ghi chú bác sĩ) và tạo ra một cấu trúc UI động dưới dạng JSON.
       
       Văn bản đầu vào: "${promptText}"
@@ -298,7 +298,7 @@ export const GeminiService = {
 
     let finalMessage = message;
     const systemInstruction = `
-      Bạn là trợ lý y tế ảo 'HealFlow' dành cho người lớn tuổi. 
+      Bạn là trợ lý y tế ảo 'HealthBuddy' dành cho người lớn tuổi. 
       Ngữ cảnh: ${context}
       
       Yêu cầu:

@@ -2,17 +2,14 @@
   1. Flow
   - **Quy trình (User Flow):**
     1. Bệnh nhân mở Zalo  → Quét QR trên đơn thuốc.
-    2. Zalo Mini App mở lên → Hiện popup xin quyền: *"HealFlow muốn truy cập số điện thoại và tên của bạn"*.
+    2. Zalo Mini App mở lên → Hiện popup xin quyền: *"HealthBuddy muốn truy cập số điện thoại và tên của bạn"*.
     3. Người dùng bấm **"Đồng ý"** (Đây là tính năng có sẵn của Zalo API).
-    4. **Mapping (Ghép cặp):**
-       - Hệ thống so sánh SĐT Zalo vừa lấy được với SĐT bệnh nhân được in trên đơn thuốc (dữ liệu trong QR).
-       - Nếu **TRÙNG KHỚP** →Mở khóa hồ sơ, lưu Zalo ID này là "Chủ sở hữu" của đơn thuốc đó.
-       - Nếu **KHÔNG TRÙNG** (Ví dụ con quét cho bố) → Hỏi: *"Bạn đang quét đơn thuốc của [Nguyễn Văn A]? Xác nhận bạn là người nhà?"*  → Nếu xác nhận, lưu Zalo ID này là "Người giám hộ".
-  **Kết luận:** Không cần form đăng ký user/pass. SĐT Zalo chính là chìa khóa (Key).
-  **2. Về Data: Chúng ta lấy được những gì? (Data Ingestion)**
-  **Bệnh viện in ra cái gì, ta lấy được cái đó.**
-  Chúng ta **không** chọc vào Database tổng của bệnh viện (việc này quá khó về bảo mật và xin phép), mà chúng ta "bắt" (capture) luồng dữ liệu văn bản được gửi đến máy in.
-  **Cụ thể dữ liệu lấy được (Raw Data):**
+    4. **Mapping (Ghép cặp):** - Hệ thống so sánh SĐT Zalo vừa lấy được với SĐT bệnh nhân được in trên đơn thuốc (dữ liệu trong QR). - Nếu **TRÙNG KHỚP** →Mở khóa hồ sơ, lưu Zalo ID này là "Chủ sở hữu" của đơn thuốc đó. - Nếu **KHÔNG TRÙNG** (Ví dụ con quét cho bố) → Hỏi: *"Bạn đang quét đơn thuốc của [Nguyễn Văn A]? Xác nhận bạn là người nhà?"*  → Nếu xác nhận, lưu Zalo ID này là "Người giám hộ".
+       **Kết luận:** Không cần form đăng ký user/pass. SĐT Zalo chính là chìa khóa (Key).
+       **2. Về Data: Chúng ta lấy được những gì? (Data Ingestion)**
+       **Bệnh viện in ra cái gì, ta lấy được cái đó.**
+       Chúng ta **không** chọc vào Database tổng của bệnh viện (việc này quá khó về bảo mật và xin phép), mà chúng ta "bắt" (capture) luồng dữ liệu văn bản được gửi đến máy in.
+       **Cụ thể dữ liệu lấy được (Raw Data):**
   1. **Thông tin hành chính:**
      - Tên, Tuổi, Giới tính.
      - Số thẻ BHYT (nếu có in).
@@ -30,7 +27,7 @@
      - Lời dặn dò (thường là text tự do).
   ### 3. AI sẽ làm gì với đống dữ liệu "Bệnh viện cho gì lấy đó" này?
   Dữ liệu lấy từ lệnh in thường là **Text thô (Unstructured Text)** hoặc định dạng lộn xộn. Đây chính là lúc **AI Generative** tỏa sáng để ghi điểm với BGK.
-  **Quy trình xử lý dữ liệu của HealFlow:**
+  **Quy trình xử lý dữ liệu của HealthBuddy:**
   1. **Input:** Một chuỗi văn bản lộn xộn lấy từ driver máy in.
      - *Ví dụ:* Rx: Panadol 500mg #10v (S1, C1 sau an) - Chan doan: Sot virus
   2. **AI Processing (VNPT SmartReader/LLM):**
@@ -40,26 +37,24 @@
        - Bệnh viện chỉ cho tên thuốc "Panadol".
        - **AI tự tra Dược thư:** Tìm ra hình ảnh viên thuốc, công dụng (giảm đau), tác dụng phụ (hại gan nếu uống rượu), tương tác thuốc.
        - *Kết quả:* App hiển thị hình ảnh viên thuốc và lời cảnh báo mà trên đơn giấy không có.
-     - **Translation (Dịch sang ngôn ngữ người già):**
-       - Đơn ghi: "J20 - Viêm phế quản".
-       - AI dịch: "Phổi bác đang bị viêm, sẽ gây ho và đờm."
-  quy trình về việc xin bệnh viện trích xuất data ko can thiệp
-  Bạn hãy dùng đúng thuật ngữ **"Plug-and-Play Print Middleware"** (Phần mềm trung gian Cắm-là-chạy).
+     - **Translation (Dịch sang ngôn ngữ người già):** - Đơn ghi: "J20 - Viêm phế quản". - AI dịch: "Phổi bác đang bị viêm, sẽ gây ho và đờm."
+       quy trình về việc xin bệnh viện trích xuất data ko can thiệp
+       Bạn hãy dùng đúng thuật ngữ **"Plug-and-Play Print Middleware"** (Phần mềm trung gian Cắm-là-chạy).
   ### 1. Tên giải pháp:
-  **HealFlow Print Middleware: Tích hợp "Không xâm lấn" (Non-Invasive Integration)**
+  **HealthBuddy Print Middleware: Tích hợp "Không xâm lấn" (Non-Invasive Integration)**
   ### 2. Mô tả cơ chế (Dành cho người không chuyên kỹ thuật):
-  > "Hãy tưởng tượng HealFlow như một 'Trạm kiểm soát thông minh' đặt giữa Máy tính bác sĩ và Máy in."
+  > "Hãy tưởng tượng HealthBuddy như một 'Trạm kiểm soát thông minh' đặt giữa Máy tính bác sĩ và Máy in."
   - **Quy trình cũ:** Máy tính bác sĩ →Máy in.
-  - **Quy trình HealFlow:** Máy tính bác sĩ  → **HealFlow Middleware**  →Máy in.
-  Khi bác sĩ nhấn lệnh "In đơn thuốc" trên phần mềm hiện tại:
-  1. **Bắt tín hiệu:** HealFlow nhận luồng dữ liệu in (như một bản copy).
+  - **Quy trình HealthBuddy:** Máy tính bác sĩ  → **HealthBuddy Middleware**  →Máy in.
+    Khi bác sĩ nhấn lệnh "In đơn thuốc" trên phần mềm hiện tại:
+  1. **Bắt tín hiệu:** HealthBuddy nhận luồng dữ liệu in (như một bản copy).
   2. **Xử lý tức thì:** Hệ thống tự động tạo mã QR chứa thông tin đơn thuốc đó.
   3. **Đóng dấu:** Chèn mã QR vào góc tờ đơn (như đóng dấu mộc).
   4. **Hoàn tất:** Đẩy lệnh ra máy in vật lý.
-  **Toàn bộ quá trình diễn ra trong tích tắc, Bác sĩ không cần thay đổi bất kỳ thao tác nào.**
+     **Toàn bộ quá trình diễn ra trong tích tắc, Bác sĩ không cần thay đổi bất kỳ thao tác nào.**
   ### 3. Tại sao giải pháp này An toàn & Khả thi? (Selling Points)
   - **🔒 Nguyên tắc "Luồng một chiều" (One-way Data Flow):**
-    - HealFlow chỉ **ĐỌC** dữ liệu đầu ra (lệnh in) mà tuyệt đối **KHÔNG** có quyền truy cập hay chỉnh sửa Database (HIS) của bệnh viện. Điều này loại bỏ 100% rủi ro làm hỏng dữ liệu gốc.
+    - HealthBuddy chỉ **ĐỌC** dữ liệu đầu ra (lệnh in) mà tuyệt đối **KHÔNG** có quyền truy cập hay chỉnh sửa Database (HIS) của bệnh viện. Điều này loại bỏ 100% rủi ro làm hỏng dữ liệu gốc.
   - **⚡ Triển khai "Plug-and-Play":**
     - Không cần viết lại code (No-code integration).
     - Không cần đấu nối API phức tạp.
@@ -89,9 +84,9 @@
     - thêm UI là 1, thêm vào nhắc nhở thông báo là 2 - thông báo tự nhảy khi tới giờ - thông báo = cái chat ZALO
 
 - nghiệp vụ
-  Đây là bản tài liệu tổng hợp toàn diện nhất về dự án **HealFlow (Tâm An AI)**. Tài liệu này được cấu trúc để bạn có thể dùng làm **Proposal (Hồ sơ thi)**, **PRD (Tài liệu yêu cầu sản phẩm)** cho team Dev, hoặc **Script** để thuyết trình (Pitching).
+  Đây là bản tài liệu tổng hợp toàn diện nhất về dự án **HealthBuddy (Tâm An AI)**. Tài liệu này được cấu trúc để bạn có thể dùng làm **Proposal (Hồ sơ thi)**, **PRD (Tài liệu yêu cầu sản phẩm)** cho team Dev, hoặc **Script** để thuyết trình (Pitching).
   ***
-  # 🏥 TÊN DỰ ÁN: HEALFLOW (TÂM AN AI)
+  # 🏥 TÊN DỰ ÁN: HealthBuddy (TÂM AN AI)
   **Slogan:** _Trợ lý Y tế thụ động & Ví sức khỏe trọn đời trên Zalo._
   ***
   ## 📖 PHẦN 1: TỔNG QUAN GIẢI PHÁP (EXECUTIVE SUMMARY)
@@ -99,15 +94,15 @@
   1. **Khoảng trống thông tin:** Sau khi rời bệnh viện, bệnh nhân (đặc biệt là người già) thường quên lời dặn, uống thuốc sai, dẫn đến hiệu quả điều trị kém hoặc tái nhập viện.
   2. **Rào cản công nghệ:** Người lớn tuổi ngại cài App mới, mắt kém, không biết gõ phím (typing).
   3. **Dữ liệu phân mảnh:** Đi khám Bệnh viện A, chiều khám Phòng khám B, đơn thuốc chồng chéo gây nguy cơ tương tác thuốc nguy hiểm.
-  **Giải pháp cốt lõi:**
-  Một **Zalo Mini App** tích hợp AI, hoạt động theo cơ chế **"Passive Interaction" (Tương tác thụ động)**. Người dùng không cần nhập liệu, chỉ cần quét QR hoặc chụp ảnh đơn thuốc. AI sẽ tự động phân tích, nhắc nhở, cảnh báo và trả lời bằng giọng nói.
+     **Giải pháp cốt lõi:**
+     Một **Zalo Mini App** tích hợp AI, hoạt động theo cơ chế **"Passive Interaction" (Tương tác thụ động)**. Người dùng không cần nhập liệu, chỉ cần quét QR hoặc chụp ảnh đơn thuốc. AI sẽ tự động phân tích, nhắc nhở, cảnh báo và trả lời bằng giọng nói.
   ***
   ## 🗺️ PHẦN 2: USER FLOW HOÀN THIỆN (END-TO-END FLOW)
   Hành trình người dùng được chia làm 3 giai đoạn: **Nạp dữ liệu $\rightarrow$ Chăm sóc hàng ngày $\rightarrow$ Lưu trữ trọn đời.**
   ### Giai đoạn 1: Input Đa nguồn (Unified Input)
   _Mục tiêu: Đưa dữ liệu vào hệ thống dễ nhất có thể._
   1. **Điểm chạm:** Người dùng mở Zalo $\rightarrow$ Chọn tính năng Quét QR (hoặc mở Mini App).
-  2. **Kịch bản A (Happy Case - Có QR HealFlow):**
+  2. **Kịch bản A (Happy Case - Có QR HealthBuddy):**
      - Quét mã QR trên đơn thuốc/phiếu hướng dẫn.
      - **Xử lý:** App nhận diện `Token`, tải dữ liệu JSON sạch từ Server.
      - **Kết quả:** Vào ngay Dashboard. Độ chính xác 100%.
@@ -141,7 +136,7 @@
   **1. Điểm chạm (Trigger):**
   - Trên thẻ thuốc (trong Lịch trình ngang), ngay cạnh tên thuốc sẽ có một nút nhỏ hình tròn, icon **ℹ️** hoặc **Dấu hỏi (?)**.
   - Màu sắc: Xanh nhạt hoặc Xám, không quá chói để không tranh chấp với nút hành động chính.
-  **2. Modal xuất hiện (The Drug Card):**
+    **2. Modal xuất hiện (The Drug Card):**
   - Khi bấm vào, một **Popup (hoặc Bottom Sheet)** hiện lên đè lên màn hình.
   - **Phần 1: Tóm tắt (AI Summary):**
     - Tên thuốc to rõ + Hình ảnh.
@@ -155,7 +150,7 @@
   Trong phần kỹ thuật, bạn giải thích tính năng này như sau:
   > "Context-Aware Drug Education" (Giáo dục thuốc theo ngữ cảnh)
   >
-  > Thay vì hiển thị tờ hướng dẫn sử dụng dài ngoằng mà không ai đọc, HealFlow sử dụng **LLM (SmartBot)** để tạo nội dung "Micro-content" cho từng loại thuốc:
+  > Thay vì hiển thị tờ hướng dẫn sử dụng dài ngoằng mà không ai đọc, HealthBuddy sử dụng **LLM (SmartBot)** để tạo nội dung "Micro-content" cho từng loại thuốc:
   >
   > 1. **Input:** Tên thuốc (ví dụ: Augmentin).
   > 2. **Processing:** AI tra cứu Dược thư + Hồ sơ bệnh nhân (ví dụ: Người già, hay đau bụng).
@@ -191,27 +186,27 @@
   Dưới đây là cách diễn giải **Straight-forward (Đi thẳng vào vấn đề)** cho 2 phương án này:
   ***
   ### 🏛️ PHƯƠNG ÁN 1: TÍCH HỢP "KHÔNG XÂM LẤN" (THE NON-INVASIVE WAY)
-  **Tên kỹ thuật:** \*HealFlow Print Middleware (Máy in ảo)**\*Dành cho:** Các bệnh viện quy trình cũ, hệ thống đóng (Legacy systems), hoặc ngại rủi ro bảo mật.
+  **Tên kỹ thuật:** \*HealthBuddy Print Middleware (Máy in ảo)**\*Dành cho:** Các bệnh viện quy trình cũ, hệ thống đóng (Legacy systems), hoặc ngại rủi ro bảo mật.
   **Cơ chế hoạt động:**
   Chúng ta coi hệ thống bệnh viện là một "Hộp đen" (Blackbox). Chúng ta chỉ quan tâm đầu ra là tờ giấy.
   1. **Cài đặt:** Cài một driver máy in ảo nhẹ (3MB) lên máy tính bác sĩ.
   2. **Đánh chặn (Intercept):** Khi bác sĩ nhấn "In", Middleware chặn lệnh in lại.
   3. **Trích xuất & Chèn:** Nó "đọc" nội dung văn bản trong lệnh in $\rightarrow$ Tạo QR Code $\rightarrow$ Chèn đè mã QR này vào góc tờ giấy.
   4. **Hoàn tất:** Gửi lệnh ra máy in thật.
-  **Điểm mạnh để "bán" giải pháp:**
+     **Điểm mạnh để "bán" giải pháp:**
   - ✅ **Zero-Code Change:** Bệnh viện **không cần sửa bất kỳ dòng code nào** trong phần mềm quản lý (HIS) của họ.
   - ✅ **Triển khai siêu tốc:** Cài là chạy (Plug & Play) trong 15 phút.
-  - ✅ **An toàn tuyệt đối:** HealFlow chỉ "nhìn" thấy dữ liệu khi nó được in ra, không bao giờ chạm vào Database gốc.
+  - ✅ **An toàn tuyệt đối:** HealthBuddy chỉ "nhìn" thấy dữ liệu khi nó được in ra, không bao giờ chạm vào Database gốc.
   ***
   ### 🏛️ PHƯƠNG ÁN 2: TÍCH HỢP "TRUY XUẤT NHẸ" (THE LIGHT INTEGRATION WAY)
-  **Tên kỹ thuật:** \*HealFlow API Connector (Kết nối API)**\*Dành cho:** Bệnh viện đã Chuyển đổi số, cởi mở, muốn dữ liệu đầy đủ và chính xác 100%.
+  **Tên kỹ thuật:** \*HealthBuddy API Connector (Kết nối API)**\*Dành cho:** Bệnh viện đã Chuyển đổi số, cởi mở, muốn dữ liệu đầy đủ và chính xác 100%.
   **Cơ chế hoạt động:**
-  Bệnh viện cấp cho HealFlow một quyền **"Đọc giới hạn" (Read-only Access)** thông qua API hoặc View Database.
+  Bệnh viện cấp cho HealthBuddy một quyền **"Đọc giới hạn" (Read-only Access)** thông qua API hoặc View Database.
   1. **Kích hoạt (Trigger):** Khi bác sĩ nhấn nút "Lưu & In" trên phần mềm bệnh viện.
-  2. **Truy vấn (Query):** Phần mềm bệnh viện bắn một tín hiệu (chứa `Mã Đợt Khám`) sang Server HealFlow.
-  3. **Trích xuất (Fetch):** HealFlow dùng mã đó, gọi ngược lại API bệnh viện để lấy trọn bộ hồ sơ (File PDF xét nghiệm gốc, Đơn thuốc dạng JSON chuẩn).
-  4. **Phản hồi:** HealFlow trả về một mã QR (dưới dạng ảnh) để phần mềm bệnh viện tự in lên giấy.
-  **Điểm mạnh "Straight-forward":**
+  2. **Truy vấn (Query):** Phần mềm bệnh viện bắn một tín hiệu (chứa `Mã Đợt Khám`) sang Server HealthBuddy.
+  3. **Trích xuất (Fetch):** HealthBuddy dùng mã đó, gọi ngược lại API bệnh viện để lấy trọn bộ hồ sơ (File PDF xét nghiệm gốc, Đơn thuốc dạng JSON chuẩn).
+  4. **Phản hồi:** HealthBuddy trả về một mã QR (dưới dạng ảnh) để phần mềm bệnh viện tự in lên giấy.
+     **Điểm mạnh "Straight-forward":**
   - ✅ **Data Sạch (Clean Data):** Không cần OCR hay phân tích lệnh in. Dữ liệu lấy trực tiếp từ nguồn nên chính xác 100%.
   - ✅ **Lấy được nhiều hơn:** Có thể lấy được cả những ghi chú của bác sĩ hoặc kết quả xét nghiệm cũ mà **không cần in ra giấy**.
   - ✅ **Quy trình chuẩn:** Đây là cách làm việc tiêu chuẩn của các hệ thống Y tế hiện đại (HL7/FHIR).
@@ -226,22 +221,22 @@
   | **Trường hợp dùng**      | Phòng khám tư, BV cũ, Demo nhanh  | BV lớn, BV thông minh, Hợp tác sâu     |
   ### 💡 LỜI KHUYÊN CHIẾN THUẬT
   Trong Proposal vòng này, bạn hãy viết:
-  > "HealFlow được thiết kế với kiến trúc linh hoạt, ưu tiên Phương án 1 (Máy in ảo) để thâm nhập thị trường nhanh chóng mà không gặp rào cản kỹ thuật. Tuy nhiên, hệ thống sẵn sàng chuyển sang Phương án 2 (API Integration) khi đối tác bệnh viện muốn nâng cao trải nghiệm dữ liệu chuyên sâu."
-  Câu này cho thấy bạn vừa thực dụng (biết cách đi nhanh) vừa có tầm nhìn (biết cách làm chuẩn).
+  > "HealthBuddy được thiết kế với kiến trúc linh hoạt, ưu tiên Phương án 1 (Máy in ảo) để thâm nhập thị trường nhanh chóng mà không gặp rào cản kỹ thuật. Tuy nhiên, hệ thống sẵn sàng chuyển sang Phương án 2 (API Integration) khi đối tác bệnh viện muốn nâng cao trải nghiệm dữ liệu chuyên sâu."
+  > Câu này cho thấy bạn vừa thực dụng (biết cách đi nhanh) vừa có tầm nhìn (biết cách làm chuẩn).
   ***
   ### 🤖 PHẦN 5: ỨNG DỤNG AI TRIỆT ĐỂ (AI STACK)
   Sử dụng bộ API của cuộc thi (VNPT AI) để giải quyết từng khâu:
-  | Chức năng             | API Sử dụng                | Vai trò của AI                                                                                                                         |
+  | Chức năng | API Sử dụng | Vai trò của AI |
   | --------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-  | **Đầu vào (Input)**   | **VNPT SmartReader (OCR)** | Đọc và số hóa đơn thuốc giấy, đơn viết tay khi không có QR.                                                                            |
-  | **Xử lý (Core)**      | **VNPT SmartBot (LLM)**    | - Cấu trúc hóa dữ liệu thô.<br>- Tra cứu tương tác thuốc.<br>- Tạo lời dặn bình dân hóa.<br>- Dự đoán câu hỏi người dùng (Predictive). |
-  | **Giao tiếp (UI)**    | **VNPT SmartVoice (TTS)**  | Chuyển văn bản thành giọng nói (Text-to-Speech) để người già "nghe" đơn thuốc.                                                         |
-  | **Lắng nghe (Input)** | **VNPT SmartVoice (STT)**  | Chuyển giọng nói người già thành văn bản để Bot trả lời (Speech-to-Text).                                                              |
-  |                       |                            |                                                                                                                                        |
-  | **Thấu hiểu**         | **VNSocial / Emotion**     | Phân tích cảm xúc qua giọng nói để phát hiện sự mệt mỏi/lo lắng của bệnh nhân.                                                         |
-  | **Tính năng HealFlow (User Feature)**                   | **API VNPT sử dụng**                                         | **Vai trò cụ thể trong hệ thống** |
+  | **Đầu vào (Input)** | **VNPT SmartReader (OCR)** | Đọc và số hóa đơn thuốc giấy, đơn viết tay khi không có QR. |
+  | **Xử lý (Core)** | **VNPT SmartBot (LLM)** | - Cấu trúc hóa dữ liệu thô.<br>- Tra cứu tương tác thuốc.<br>- Tạo lời dặn bình dân hóa.<br>- Dự đoán câu hỏi người dùng (Predictive). |
+  | **Giao tiếp (UI)** | **VNPT SmartVoice (TTS)** | Chuyển văn bản thành giọng nói (Text-to-Speech) để người già "nghe" đơn thuốc. |
+  | **Lắng nghe (Input)** | **VNPT SmartVoice (STT)** | Chuyển giọng nói người già thành văn bản để Bot trả lời (Speech-to-Text). |
+  | | | |
+  | **Thấu hiểu** | **VNSocial / Emotion** | Phân tích cảm xúc qua giọng nói để phát hiện sự mệt mỏi/lo lắng của bệnh nhân. |
+  | **Tính năng HealthBuddy (User Feature)** | **API VNPT sử dụng** | **Vai trò cụ thể trong hệ thống** |
   | ------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------- |
-  | **1. Đọc đơn thuốc giấy**<br>(Dự phòng khi không có QR) | **VNPT SmartReader**<br>_(5.1 OCR + 5.2 Bóc tách thông tin)_ | Chụp ảnh đơn thuốc                |
+  | **1. Đọc đơn thuốc giấy**<br>(Dự phòng khi không có QR) | **VNPT SmartReader**<br>_(5.1 OCR + 5.2 Bóc tách thông tin)_ | Chụp ảnh đơn thuốc  |
   `→` API bóc tách dữ liệu: Tên thuốc, Liều lượng, Lời dặn
   `→` Chuyển thành JSON để nạp vào Lịch uống thuốc. |
   | **2. Tóm tắt bệnh án**<br>(Giáo dục bệnh nhân) | **VNPT SmartReader**<br>_(5.3 Tóm tắt)_ | Đầu vào là đoạn chẩn đoán dài dòng của bác sĩ
@@ -269,4 +264,4 @@
   - **An toàn:** Được cảnh báo nếu uống nhầm thuốc.
   ***
   ### ✅ TỔNG KẾT
-  **HealFlow** không chỉ là một ứng dụng nhắc thuốc. Nó là một **lớp (layer) công nghệ thông minh** nằm giữa Bệnh viện và Bệnh nhân, giúp xóa bỏ rào cản công nghệ cho người cao tuổi bằng **Passive AI** và **Zalo Ecosystem**.
+  **HealthBuddy** không chỉ là một ứng dụng nhắc thuốc. Nó là một **lớp (layer) công nghệ thông minh** nằm giữa Bệnh viện và Bệnh nhân, giúp xóa bỏ rào cản công nghệ cho người cao tuổi bằng **Passive AI** và **Zalo Ecosystem**.

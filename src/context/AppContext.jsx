@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
 
   // Load from local storage on init
   useEffect(() => {
-    const saved = localStorage.getItem("healflow_prescription");
+    const saved = localStorage.getItem("healthbuddy_prescription");
     if (saved) {
       try {
         setPrescription(JSON.parse(saved));
@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
 
   const savePrescription = (data) => {
     setPrescription(data);
-    localStorage.setItem("healflow_prescription", JSON.stringify(data));
+    localStorage.setItem("healthbuddy_prescription", JSON.stringify(data));
   };
 
   return (

@@ -9,7 +9,7 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HealFlow - Tâm An AI</title>
+    <title>HealthBuddy - Tâm An AI</title>
     <style>
     /* --- 1. DESIGN SYSTEM (Zalo Style) --- */
     :root {
@@ -184,7 +184,7 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     <!-- HEADER -->
     <div class="z-header">
         <div class="header-avatar">👴</div>
-        <span>HealFlow</span>
+        <span>HealthBuddy</span>
         <div class="header-sos" onclick="alert('Đang gọi con trai (Anh Tuấn)...')">SOS</div>
     </div>
     
@@ -452,14 +452,13 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     </body>
     </html>
 
-
 - v5
     <!DOCTYPE html>
     <html lang="vi">
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HealFlow - Zalo Mini App</title>
+    <title>HealthBuddy - Zalo Mini App</title>
     <style>
     /* --- CORE VARIABLES --- */
     :root {
@@ -554,7 +553,7 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     <body>
     
     ```
-    <div class="z-header">HealFlow</div>
+    <div class="z-header">HealthBuddy</div>
     
     <!-- 1. TÓM TẮT BỆNH & LỜI DẶN (KÍCH CẦU TÁI KHÁM) -->
     <div class="diag-card">
@@ -685,7 +684,7 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HealFlow - Drug Info Update</title>
+    <title>HealthBuddy - Drug Info Update</title>
     <style>
     /* --- GIỮ NGUYÊN CSS CŨ --- */
     :root { --zalo-blue: #0068FF; --bg: #F2F4F7; --text-main: #232731; --text-sub: #767A82; }
@@ -748,7 +747,7 @@ cần những giao diện cần thiết như tôi đã yêu cầu, trang chủ v
     <body>
     
     ```
-    <div class="z-header">HealFlow</div>
+    <div class="z-header">HealthBuddy</div>
     
     <!-- TIMETABLE -->
     <div class="sec-title">📅 Lịch trình hôm nay</div>

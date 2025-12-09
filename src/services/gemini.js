@@ -20,23 +20,26 @@ export const GeminiService = {
       promptText = JSON.stringify(text);
     }
 
-    // REMOVED: The block that checks for existing JSON and returns it immediately.
-    // We now force AI processing for ALL inputs to ensure the Dynamic UI structure is generated.
-
     if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
       console.warn("Gemini API Key is missing. Returning mock data.");
       return mockPrescriptionData;
     }
+
+    const currentDate = new Date().toLocaleString("vi-VN");
 
     const prompt = `
       You are an AI backend for "HealFlow", a medical app for the elderly.
       Analyze the input text (OCR from prescription, lab result, or doctor note) and generate a Dynamic UI JSON structure.
       
       Input Text: "${promptText}"
+      Current Date: "${currentDate}"
 
       Rules:
       1. Do NOT assume a fixed schema. Adapt the UI modules based on the content.
-      2. If it's a Prescription: Use a 'medication_scroll' module.
+      2. If it's a Prescription: 
+         - Use a 'medication_schedule' module.
+         - INTELLIGENTLY GROUP medicines into sessions: "morning" (Sáng), "noon" (Trưa), "evening" (Chiều/Tối), "as_needed" (Khi cần/Sốt/Đau).
+         - Calculate if the prescription is valid based on "Current Date" vs "Prescription Date" + "Duration".
       3. If it's a Lab Result: Use an 'info_list' module.
       4. If it's General Advice: Use a 'text_block' module.
       5. Always provide a 'summary_card' at the top.
@@ -52,11 +55,18 @@ export const GeminiService = {
         "modules": [
           {
             "id": "unique_string",
-            "type": "medication_scroll" | "info_list" | "text_block",
-            "title": "Section Title (e.g., 'Lịch uống thuốc', 'Kết quả xét nghiệm')",
+            "type": "medication_schedule" | "info_list" | "text_block",
+            "title": "Section Title",
+            "status": "active" | "expired", // For prescription, check dates
             "data": [ 
-              // If type is medication_scroll:
-              { "name": "Drug Name", "detail": "Dosage", "sub_detail": "Time/Instruction", "icon": "pill" }
+              // If type is medication_schedule (Array of Sessions):
+              { 
+                "session": "morning" | "noon" | "evening" | "as_needed",
+                "display_time": "07:00 • Sáng",
+                "items": [
+                  { "name": "Drug Name", "dosage": "1 viên", "instruction": "Sau ăn", "icon": "pill" }
+                ]
+              }
               // If type is info_list:
               { "label": "Test Name", "value": "Result Value", "status": "normal" | "warning" }
             ] 
@@ -135,22 +145,15 @@ export const GeminiService = {
       return "I am a demo bot. Please configure your Gemini API Key to chat for real.";
     }
 
-    // Prepend context to the first message if history is empty, or handle it via system instruction if supported
-    // For simplicity, we'll prepend context to the current message if it's the start of a conversation,
-    // but since history is passed, we can just rely on the model knowing the context if we inject it.
-
     let finalMessage = message;
     if (history.length === 0 && context) {
       finalMessage = `Context: ${context}\n\nUser Question: ${message}`;
-    } else if (context) {
-      // If history exists, we assume context was established, but we can reinforce it lightly
-      // or just send the message.
     }
 
     const chat = model.startChat({
       history: history,
       generationConfig: {
-        maxOutputTokens: 500, // Increased for better answers
+        maxOutputTokens: 500,
       },
     });
 
@@ -176,29 +179,54 @@ const mockPrescriptionData = {
   },
   modules: [
     {
+      id: "meds_schedule",
+      type: "medication_schedule",
+      title: "Lịch uống thuốc hôm nay",
+      status: "active",
+      data: [
+        {
+          session: "morning",
+          display_time: "07:00 • Sáng",
+          items: [
+            {
+              name: "Augmentin 625mg",
+              dosage: "1 viên",
+              instruction: "Sau ăn",
+              icon: "pill",
+            },
+          ],
+        },
+        {
+          session: "noon",
+          display_time: "12:00 • Trưa",
+          items: [
+            {
+              name: "Panadol 500mg",
+              dosage: "1 viên",
+              instruction: "Sau ăn",
+              icon: "pill",
+            },
+          ],
+        },
+        {
+          session: "evening",
+          display_time: "19:00 • Tối",
+          items: [
+            {
+              name: "Augmentin 625mg",
+              dosage: "1 viên",
+              instruction: "Sau ăn",
+              icon: "pill",
+            },
+          ],
+        },
+      ],
+    },
+    {
       id: "advice_1",
       type: "text_block",
       title: "Lời dặn bác sĩ",
       data: "Uống nhiều nước ấm, tránh nằm điều hòa lạnh. Tái khám sau 5 ngày.",
-    },
-    {
-      id: "meds_1",
-      type: "medication_scroll",
-      title: "Lịch uống thuốc",
-      data: [
-        {
-          name: "Augmentin 625mg",
-          detail: "625mg - 14 viên",
-          sub_detail: "Sáng 1, Chiều 1 (Sau ăn)",
-          icon: "pill",
-        },
-        {
-          name: "Panadol 500mg",
-          detail: "500mg - 10 viên",
-          sub_detail: "Uống khi sốt > 38.5 độ",
-          icon: "pill",
-        },
-      ],
     },
   ],
   suggested_questions: [

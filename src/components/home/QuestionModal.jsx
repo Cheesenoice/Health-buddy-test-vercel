@@ -1,8 +1,68 @@
-import React from "react";
-import { X } from "lucide-react";
+import React, { useEffect } from "react";
+import { X, Volume2 } from "lucide-react";
 
 const QuestionModal = ({ isOpen, question, answer, answering, onClose }) => {
+  // Auto-speak when answer arrives
+  useEffect(() => {
+    if (!answering && answer && isOpen) {
+      const u = new SpeechSynthesisUtterance(answer);
+      u.lang = "vi-VN";
+      window.speechSynthesis.speak(u);
+
+      return () => {
+        window.speechSynthesis.cancel();
+      };
+    }
+  }, [answering, answer, isOpen]);
+
   if (!isOpen) return null;
+
+  // Simple Markdown Parser for Bold and Lists
+  const renderContent = (text) => {
+    if (!text) return null;
+
+    const lines = text.split("\n");
+
+    return (
+      <div className="text-gray-800 text-sm leading-relaxed space-y-2">
+        {lines.map((line, index) => {
+          // Handle Bullet points
+          if (line.trim().startsWith("*") || line.trim().startsWith("-")) {
+            const content = line.replace(/^[\*\-]\s*/, "");
+            const parts = content.split(/(\*\*.*?\*\*)/g);
+            return (
+              <div key={index} className="flex gap-2 items-start">
+                <span className="text-zalo-primary mt-1">•</span>
+                <span>
+                  {parts.map((part, i) => {
+                    if (part.startsWith("**") && part.endsWith("**")) {
+                      return <strong key={i}>{part.slice(2, -2)}</strong>;
+                    }
+                    return part;
+                  })}
+                </span>
+              </div>
+            );
+          }
+
+          // Regular text with bold support
+          const parts = line.split(/(\*\*.*?\*\*)/g);
+          if (line.trim() === "") return <br key={index} />;
+
+          return (
+            <p key={index}>
+              {parts.map((part, i) => {
+                if (part.startsWith("**") && part.endsWith("**")) {
+                  return <strong key={i}>{part.slice(2, -2)}</strong>;
+                }
+                return part;
+              })}
+            </p>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -12,7 +72,10 @@ const QuestionModal = ({ isOpen, question, answer, answering, onClose }) => {
             {question}
           </h3>
           <button
-            onClick={onClose}
+            onClick={() => {
+              window.speechSynthesis.cancel();
+              onClose();
+            }}
             className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
           >
             <X size={20} />
@@ -34,10 +97,17 @@ const QuestionModal = ({ isOpen, question, answer, answering, onClose }) => {
                   <div className="min-w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center border border-blue-100 shadow-sm text-xl">
                     👨‍⚕️
                   </div>
-                  <div>
-                    <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
-                      {answer}
-                    </p>
+                  <div className="flex-1">
+                    {renderContent(answer)}
+
+                    {/* VNPT SmartVoice Branding */}
+                    <div className="flex items-center gap-1.5 mt-3 bg-white/60 w-fit px-2 py-1 rounded-lg border border-blue-100">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <Volume2 size={12} className="text-zalo-primary" />
+                      <span className="text-[10px] font-bold text-zalo-primary">
+                        VNPT SmartVoice
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -50,7 +120,10 @@ const QuestionModal = ({ isOpen, question, answer, answering, onClose }) => {
 
         <div className="p-4 border-t bg-gray-50 rounded-b-3xl">
           <button
-            onClick={onClose}
+            onClick={() => {
+              window.speechSynthesis.cancel();
+              onClose();
+            }}
             className="w-full bg-zalo-primary text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform"
           >
             Đã hiểu

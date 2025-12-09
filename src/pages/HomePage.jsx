@@ -71,52 +71,58 @@ const HomePage = () => {
   };
 
   return (
-    <div className="pb-24 bg-gray-50 min-h-screen">
-      {/* Dynamic Header Card */}
-      <SummaryCard summaryCard={prescription.summary_card} />
+    <div className="min-h-screen bg-gray-100 flex justify-center font-sans">
+      <div className="w-full max-w-md bg-gray-50 min-h-screen shadow-xl relative pb-24">
+        {/* Dynamic Header Card */}
+        <SummaryCard summaryCard={prescription.summary_card} />
 
-      {/* Render Dynamic Modules */}
-      {prescription.modules &&
-        prescription.modules.map((module) => (
-          <ModuleRenderer
-            key={module.id}
-            module={module}
-            onDrugClick={handleDrugClick}
-          />
-        ))}
+        {/* Render Dynamic Modules */}
+        {prescription.modules &&
+          prescription.modules.map((module) => (
+            <ModuleRenderer
+              key={module.id}
+              module={module}
+              onDrugClick={handleDrugClick}
+            />
+          ))}
 
-      {/* Suggested Questions (Big Cards) */}
-      <SuggestedQuestions
-        questions={prescription.suggested_questions}
-        onQuestionClick={handleQuestionClick}
-      />
+        {/* Suggested Questions (Big Cards) */}
+        <SuggestedQuestions
+          questions={prescription.suggested_questions}
+          onQuestionClick={handleQuestionClick}
+        />
 
-      {/* Floating Chat Button */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-24 right-4 bg-zalo-primary text-white p-4 rounded-full shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors z-40"
-      >
-        <Mic size={24} />
-      </button>
+        {/* Floating Chat Button - Positioned relative to the mobile frame */}
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center pointer-events-none z-40">
+          <div className="w-full max-w-md relative h-screen">
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="absolute bottom-24 right-4 bg-zalo-primary text-white p-4 rounded-full shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors pointer-events-auto"
+            >
+              <Mic size={24} />
+            </button>
+          </div>
+        </div>
 
-      {/* Drug Info Modal */}
-      <DrugInfoModal
-        selectedDrug={selectedDrug}
-        onClose={() => setSelectedDrug(null)}
-        loadingInfo={loadingInfo}
-        drugInfo={drugInfo}
-      />
+        {/* Drug Info Modal */}
+        <DrugInfoModal
+          selectedDrug={selectedDrug}
+          onClose={() => setSelectedDrug(null)}
+          loadingInfo={loadingInfo}
+          drugInfo={drugInfo}
+        />
 
-      {/* Question Answer Modal */}
-      <QuestionModal
-        isOpen={questionModal.isOpen}
-        question={questionModal.question}
-        answer={questionModal.answer}
-        answering={answering}
-        onClose={() => setQuestionModal({ ...questionModal, isOpen: false })}
-      />
+        {/* Question Answer Modal */}
+        <QuestionModal
+          isOpen={questionModal.isOpen}
+          question={questionModal.question}
+          answer={questionModal.answer}
+          answering={answering}
+          onClose={() => setQuestionModal({ ...questionModal, isOpen: false })}
+        />
 
-      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      </div>
     </div>
   );
 };

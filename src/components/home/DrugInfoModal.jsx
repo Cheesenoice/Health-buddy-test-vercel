@@ -18,8 +18,8 @@ const DrugInfoModal = ({
   if (!selectedDrug) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white w-full sm:w-[400px] h-[85vh] sm:h-auto sm:rounded-3xl rounded-t-3xl flex flex-col shadow-2xl animate-slide-up">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center p-0">
+      <div className="bg-white w-full max-w-md h-[85vh] rounded-t-3xl flex flex-col shadow-2xl animate-slide-up">
         <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-3xl">
           <div className="flex items-center gap-3">
             <div className="flex flex-col">

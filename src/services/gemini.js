@@ -74,7 +74,7 @@ export const GeminiService = {
             // If type is text_block, data is just a string.
           }
         ],
-        "suggested_questions": ["Question 1?", "Question 2?", "Question 3?", "Question 4?"] (min 4, max 4),
+        "suggested_questions": ["Câu hỏi 1?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (min 4, max 4. QUAN TRỌNG: Đây là câu hỏi BỆNH NHÂN hỏi Bác sĩ. Ví dụ: "Tôi nên kiêng ăn gì?", "Bệnh này có lây không?". KHÔNG ĐƯỢC tạo câu hỏi bác sĩ hỏi bệnh nhân),
         "speech_text": "A warm greeting and summary for Text-to-Speech."
       }
       
@@ -116,7 +116,7 @@ export const GeminiService = {
         "side_effects": ["Common side effect 1", "Common side effect 2"],
         "lifestyle_advice": "One tip for lifestyle changes while taking this drug (e.g., drink water, avoid alcohol).",
         "serious_warning": "One important warning (e.g., stop if rash appears).",
-        "suggested_questions": ["Question 1 related to this drug?", "Question 2?", "Question 3?", "Question 4?"]
+        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về thuốc này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (LƯU Ý: Đóng vai bệnh nhân hỏi bác sĩ)
       }
       Chỉ trả về đối tượng JSON, không kèm định dạng markdown.
     `;
@@ -153,6 +153,9 @@ export const GeminiService = {
       Ngữ cảnh: ${context}
       Câu hỏi hiện tại: ${JSON.stringify(currentQuestions)}
       Tạo đúng 4 câu hỏi mới, ngắn gọn, đơn giản, phù hợp cho người lớn tuổi về đơn thuốc hoặc chẩn đoán, không trùng với các câu hỏi hiện tại.
+      QUAN TRỌNG: Các câu hỏi này là do BỆNH NHÂN hỏi BÁC SĨ để hiểu thêm về bệnh tình.
+      Ví dụ ĐÚNG: "Tôi có được ăn trứng không?", "Uống thuốc này có mệt không?", "Khi nào tôi cần tái khám?".
+      Ví dụ SAI (Cấm): "Bác có bị tiểu đường không?", "Bác thấy trong người thế nào?".
       Trả về một mảng JSON gồm 4 chuỗi câu hỏi.
       Chỉ trả về mảng JSON, không thêm gì khác.
     `;
@@ -257,8 +260,7 @@ export const GeminiService = {
       Return a JSON object:
       {
         "explanation": "Markdown text...",
-        "explanation": "Markdown text...",
-        "suggested_questions": ["Question 1 related to this result?", "Question 2?", "Question 3?", "Question 4?"] min 4, max 4
+        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về chỉ số này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (min 4, max 4. Đóng vai bệnh nhân hỏi)
       }
       Chỉ trả về JSON.
     `;
@@ -303,10 +305,12 @@ export const GeminiService = {
       
       Yêu cầu:
       1. Trả lời bằng Tiếng Việt, ngắn gọn, dễ hiểu, ân cần.
-      2. Trả về định dạng JSON:
+      2. Nếu ngữ cảnh (context) rỗng hoặc không có thông tin bệnh lý, và người dùng hỏi về tình trạng sức khỏe của họ, hãy hướng dẫn họ chọn tính năng "Quét đơn thuốc" hoặc "Chụp kết quả" để bạn có dữ liệu tư vấn.
+      3. Trả về định dạng JSON:
       {
         "answer": "Nội dung trả lời (Markdown)...",
-        "suggested_questions": ["Câu hỏi gợi ý 1?", "Câu hỏi gợi ý 2?", "Câu hỏi gợi ý 3?", "Câu hỏi gợi ý 4?"] (Tối đa 4 câu)
+        "suggested_questions": ["Câu hỏi tiếp theo bệnh nhân nên hỏi?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (Tối đa 4 câu. Đóng vai bệnh nhân hỏi lại bác sĩ),
+        "action": "scan_prescription" (Nếu bạn khuyên người dùng quét đơn thuốc/kết quả xét nghiệm) hoặc null
       }
       Chỉ trả về JSON.
     `;

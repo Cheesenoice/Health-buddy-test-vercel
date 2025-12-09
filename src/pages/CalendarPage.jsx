@@ -14,6 +14,8 @@ const CalendarPage = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [weekDays, setWeekDays] = useState([]);
+  // Track completed (ticked) medication item ids
+  const [completedItems, setCompletedItems] = useState(new Set());
 
   // Generate 7 days for the week (Monday -> Sunday) that contains selectedDate
   useEffect(() => {
@@ -119,6 +121,34 @@ const CalendarPage = () => {
       ],
     },
   ];
+
+  // Initialize completedItems from scheduleData (session-level or item-level flags)
+  useEffect(() => {
+    const ids = new Set();
+    scheduleData.forEach((slot) => {
+      if (slot.type === "session" && Array.isArray(slot.items)) {
+        if (slot.status === "done") {
+          slot.items.forEach((it) => ids.add(it.id));
+        } else {
+          // support item.done if present in data
+          slot.items.forEach((it) => {
+            if (it.done) ids.add(it.id);
+          });
+        }
+      }
+    });
+    setCompletedItems(ids);
+  }, []); // run once on mount
+
+  // toggle a single medication item
+  const toggleItem = (id) => {
+    setCompletedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans pb-24 flex flex-col">
@@ -257,40 +287,47 @@ const CalendarPage = () => {
 
               {/* Med Items */}
               <div className="p-2 bg-white">
-                {slot.items.map((item, i) => (
-                  <div
-                    key={i}
-                    className={clsx(
-                      "flex items-start gap-3 p-3 rounded-xl mb-1 last:mb-0 transition-colors",
-                      isDone ? "opacity-60" : "bg-gray-50"
-                    )}
-                  >
-                    <div className="mt-1 shrink-0">
-                      <div className="w-6 h-6 bg-orange-100 text-orange-600 rounded flex items-center justify-center text-xs font-bold">
-                        {i + 1}
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-800 text-sm truncate">
-                        {item.name}
-                      </h4>
-                      <p className="text-gray-500 text-xs mt-1 flex items-center gap-1">
-                        <span className="font-medium text-gray-600">
-                          {item.dosage}
-                        </span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                        <span>{item.instruction}</span>
-                      </p>
-                    </div>
-                    <button className="text-gray-300 hover:text-blue-500 transition-colors shrink-0">
-                      {isDone ? (
-                        <CheckCircle2 size={24} className="text-green-500" />
-                      ) : (
-                        <Circle size={24} />
+                {slot.items.map((item, i) => {
+                  const itemDone = isDone || completedItems.has(item.id);
+                  return (
+                    <div
+                      key={i}
+                      className={clsx(
+                        "flex items-start gap-3 p-3 rounded-xl mb-1 last:mb-0 transition-colors",
+                        itemDone ? "opacity-60" : "bg-gray-50"
                       )}
-                    </button>
-                  </div>
-                ))}
+                    >
+                      <div className="mt-1 shrink-0">
+                        <div className="w-6 h-6 bg-orange-100 text-orange-600 rounded flex items-center justify-center text-xs font-bold">
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-800 text-sm truncate">
+                          {item.name}
+                        </h4>
+                        <p className="text-gray-500 text-xs mt-1 flex items-center gap-1">
+                          <span className="font-medium text-gray-600">
+                            {item.dosage}
+                          </span>
+                          <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                          <span>{item.instruction}</span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => toggleItem(item.id)}
+                        aria-pressed={itemDone}
+                        className="text-gray-300 hover:text-blue-500 transition-colors shrink-0"
+                      >
+                        {itemDone ? (
+                          <CheckCircle2 size={24} className="text-green-500" />
+                        ) : (
+                          <Circle size={24} />
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );

@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { X, Send, User, Bot, Mic, Volume2 } from "lucide-react";
+import { X, Send, User, Bot, Mic, Volume2, ScanLine } from "lucide-react";
 import { GeminiService } from "../services/gemini";
+import { useNavigate } from "react-router-dom";
 
 const ChatModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {
       role: "model",
@@ -46,6 +48,8 @@ const ChatModal = ({ isOpen, onClose }) => {
 
       // Fix: Extract answer if response is an object (e.g. { answer: "...", suggested_questions: [...] })
       let responseText = response;
+      let action = null;
+
       if (typeof response === "object") {
         responseText = response.answer || "Xin lỗi, tôi không có câu trả lời.";
         if (
@@ -54,9 +58,15 @@ const ChatModal = ({ isOpen, onClose }) => {
         ) {
           setSuggestedQuestions(response.suggested_questions);
         }
+        if (response.action) {
+          action = response.action;
+        }
       }
 
-      setMessages((prev) => [...prev, { role: "model", text: responseText }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: responseText, action: action },
+      ]);
     } catch (error) {
       console.error(error);
       setMessages((prev) => [
@@ -74,10 +84,10 @@ const ChatModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[60] flex flex-col justify-end sm:justify-center items-center animate-in fade-in duration-200">
-      <div className="bg-[#F2F4F7] w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-300">
+    <div className="fixed inset-0 bg-black/50 z-[60] flex flex-col justify-end items-center animate-in fade-in duration-200">
+      <div className="bg-[#F2F4F7] w-full max-w-md h-[80vh] rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-300">
         {/* Header */}
-        <div className="bg-white p-4 rounded-t-3xl sm:rounded-t-2xl flex justify-between items-center border-b border-gray-200">
+        <div className="bg-white p-4 rounded-t-3xl flex justify-between items-center border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-zalo-primary">
               <Bot size={24} />
@@ -125,6 +135,18 @@ const ChatModal = ({ isOpen, onClose }) => {
                   }`}
                 >
                   {msg.text}
+                  {msg.action === "scan_prescription" && (
+                    <button
+                      onClick={() => {
+                        onClose();
+                        navigate("/scan");
+                      }}
+                      className="mt-3 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-blue-700 transition-colors w-full justify-center"
+                    >
+                      <ScanLine size={16} />
+                      Mở trang quét đơn thuốc
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

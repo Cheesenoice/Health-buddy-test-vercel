@@ -79,8 +79,8 @@ const QuestionModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white w-full sm:w-[400px] h-auto sm:rounded-3xl rounded-t-3xl flex flex-col shadow-2xl animate-slide-up max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center p-0">
+      <div className="bg-white w-full max-w-md h-auto rounded-t-3xl flex flex-col shadow-2xl animate-slide-up max-h-[90vh]">
         <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-3xl gap-3">
           {onBack ? (
             <button

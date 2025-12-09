@@ -20,9 +20,9 @@ const Layout = () => {
       {/* Mobile Container Simulation */}
       <div className="w-full max-w-md bg-[#F2F4F7] min-h-screen shadow-xl relative flex flex-col">
         {/* Header (Zalo Style) */}
-        <div className="bg-zalo-primary text-white p-4 pt-8 sticky top-0 z-50 shadow-sm">
-          <h1 className="text-lg font-bold">HealthBuddy</h1>
-          <p className="text-xs opacity-90">Trợ lý y tế cá nhân</p>
+        <div className="bg-zalo-primary text-white p-4 py-3 sticky top-0 z-50 shadow-sm">
+          <h1 className="text-base font-bold">HealthBuddy</h1>
+          <p className="text-xs opacity-90">Người bạn sức khỏe</p>
         </div>
 
         {/* Main Content Area */}

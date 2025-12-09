@@ -53,7 +53,7 @@ const ScanPage = () => {
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
             <div className="bg-white/90 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg animate-fade-in-down">
               <Zap size={12} className="text-yellow-500 fill-yellow-500" />
-              <span className="text-[10px] font-bold text-zalo-primary">
+              <span className="text-[10px] text-center font-bold text-zalo-primary">
                 VNPT SmartReader • OCR
               </span>
             </div>

@@ -116,7 +116,7 @@ export const GeminiService = {
         "side_effects": ["Common side effect 1", "Common side effect 2"],
         "lifestyle_advice": "One tip for lifestyle changes while taking this drug (e.g., drink water, avoid alcohol).",
         "serious_warning": "One important warning (e.g., stop if rash appears).",
-        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về thuốc này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (LƯU Ý: Đóng vai bệnh nhân hỏi bác sĩ)
+        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về thuốc này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (LƯU Ý: Vai bệnh nhân lớn tuổi hỏi bác sĩ)
       }
       Chỉ trả về đối tượng JSON, không kèm định dạng markdown.
     `;

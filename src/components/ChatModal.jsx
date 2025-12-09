@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { X, Send, User, Bot } from "lucide-react";
+import { X, Send, User, Bot, Mic, Volume2 } from "lucide-react";
 import { GeminiService } from "../services/gemini";
-import { useApp } from "../context/AppContext";
 
 const ChatModal = ({ isOpen, onClose }) => {
-  const { prescription } = useApp();
   const [messages, setMessages] = useState([
     {
       role: "model",
@@ -13,6 +11,11 @@ const ChatModal = ({ isOpen, onClose }) => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState([
+    "Thuốc này uống lúc nào tốt nhất?",
+    "Tôi có cần kiêng ăn gì không?",
+    "Tác dụng phụ của thuốc là gì?",
+  ]);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -21,15 +24,16 @@ const ChatModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages, suggestedQuestions]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleSend = async (text = input) => {
+    if (!text.trim()) return;
 
-    const userMsg = input;
+    const userMsg = text;
     setInput("");
     setMessages((prev) => [...prev, { role: "user", text: userMsg }]);
     setIsLoading(true);
+    setSuggestedQuestions([]); // Clear old suggestions while loading
 
     try {
       // Convert history to Gemini format
@@ -38,21 +42,21 @@ const ChatModal = ({ isOpen, onClose }) => {
         parts: [{ text: m.text }],
       }));
 
-      // Prepare context from prescription
-      let context = "";
-      if (prescription) {
-        context = `
-          Patient Diagnosis: ${prescription.diagnosis}
-          Explanation: ${prescription.diagnosis_explanation}
-          Medicines: ${prescription.medicines
-            .map((m) => `${m.name} (${m.dosage})`)
-            .join(", ")}
-          Advice: ${prescription.advice}
-        `;
+      const response = await GeminiService.chat(userMsg, history);
+
+      // Fix: Extract answer if response is an object (e.g. { answer: "...", suggested_questions: [...] })
+      let responseText = response;
+      if (typeof response === "object") {
+        responseText = response.answer || "Xin lỗi, tôi không có câu trả lời.";
+        if (
+          response.suggested_questions &&
+          Array.isArray(response.suggested_questions)
+        ) {
+          setSuggestedQuestions(response.suggested_questions);
+        }
       }
 
-      const response = await GeminiService.chat(userMsg, history, context);
-      setMessages((prev) => [...prev, { role: "model", text: response }]);
+      setMessages((prev) => [...prev, { role: "model", text: responseText }]);
     } catch (error) {
       console.error(error);
       setMessages((prev) => [
@@ -70,83 +74,122 @@ const ChatModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4">
-      <div className="bg-white w-full sm:w-[400px] h-[90vh] sm:h-[600px] flex flex-col sm:rounded-2xl shadow-2xl animate-slide-up">
+    <div className="fixed inset-0 bg-black/50 z-[60] flex flex-col justify-end sm:justify-center items-center animate-in fade-in duration-200">
+      <div className="bg-[#F2F4F7] w-full max-w-md h-[80vh] sm:h-[600px] sm:rounded-2xl rounded-t-3xl shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-300">
         {/* Header */}
-        <div className="bg-zalo-primary p-4 flex justify-between items-center text-white rounded-t-2xl">
+        <div className="bg-white p-4 rounded-t-3xl sm:rounded-t-2xl flex justify-between items-center border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-full">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-zalo-primary">
               <Bot size={24} />
             </div>
             <div>
-              <h3 className="font-bold">Trợ lý Y tế AI</h3>
-              <p className="text-xs text-blue-100 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Đang hoạt động
+              <h3 className="font-bold text-gray-800">Bác sĩ AI</h3>
+              <p className="text-xs text-green-500 flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span> Đang
+                trực tuyến
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <X size={24} />
+            <X size={24} className="text-gray-500" />
           </button>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`flex ${
-                msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Message List */}
+          <div className="space-y-4">
+            {messages.map((msg, idx) => (
               <div
-                className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
-                  msg.role === "user"
-                    ? "bg-blue-100 text-blue-900 rounded-tr-none"
-                    : "bg-white text-gray-800 border border-gray-100 rounded-tl-none"
+                key={idx}
+                className={`flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {msg.text}
+                <div
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                    msg.role === "user"
+                      ? "bg-zalo-primary text-white rounded-tr-none"
+                      : "bg-white text-gray-800 shadow-sm rounded-tl-none"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></span>
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Persistent Mic & Branding & Suggestions */}
+          <div className="flex flex-col items-center gap-4 pb-4">
+            {/* Mic & Tag */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative group cursor-pointer">
+                <div className="absolute inset-0 bg-zalo-primary/20 rounded-full animate-ping"></div>
+                <div className="w-16 h-16 bg-zalo-primary rounded-full flex items-center justify-center shadow-lg shadow-zalo-primary/30 transition-transform hover:scale-105 active:scale-95">
+                  <Mic size={28} className="text-white" />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full shadow-sm border border-blue-100">
+                <Volume2 size={14} className="text-zalo-primary" />
+                <span className="text-[10px] font-bold text-zalo-primary">
+                  VNPT SmartVoice
+                </span>
               </div>
             </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm flex gap-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
+
+            {/* Suggestions */}
+            {!isLoading && suggestedQuestions.length > 0 && (
+              <div className="w-full space-y-2">
+                <p className="text-xs font-bold text-gray-400 uppercase text-center mb-2">
+                  {messages.length > 1 ? "Gợi ý tiếp theo" : "Gợi ý câu hỏi"}
+                </p>
+                <div className="flex flex-col gap-2">
+                  {suggestedQuestions.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSend(q)}
+                      className="w-full bg-white text-gray-700 p-3 rounded-xl text-sm font-medium shadow-sm border border-gray-100 active:scale-95 transition-all hover:border-zalo-primary/50 hover:text-zalo-primary text-left flex justify-between items-center"
+                    >
+                      {q}
+                      <span className="text-gray-300">›</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <div className="p-4 bg-white border-t">
+        {/* Input */}
+        <div className="p-4 bg-white border-t border-gray-200">
           <div className="flex gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Nhập câu hỏi của bác..."
-              className="flex-1 bg-gray-100 border-none rounded-full px-4 py-3 focus:ring-2 focus:ring-zalo-primary outline-none text-sm"
+              placeholder="Nhập câu hỏi..."
+              className="flex-1 bg-gray-100 border-none rounded-full px-4 py-3 focus:ring-2 focus:ring-zalo-primary outline-none"
             />
             <button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
-              className="bg-zalo-primary text-white p-3 rounded-full shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+              className="bg-zalo-primary text-white p-3 rounded-full disabled:opacity-50"
             >
               <Send size={20} />
             </button>

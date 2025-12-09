@@ -40,6 +40,7 @@ export const GeminiService = {
          - Sử dụng module 'medication_schedule'.
          - NHÓM thuốc một cách THÔNG MINH theo các session: "morning" (Sáng), "noon" (Trưa), "evening" (Chiều/Tối), "as_needed" (Khi cần/Sốt/Đau).
          - Tính xem đơn thuốc còn hiệu lực hay không dựa trên "Current Date" so với "Prescription Date" + "Duration".
+         - Xem KỸ trường hợp 'as_needed': bất kỳ thuốc nào không nằm trong liều/cử chính (thuốc ngoài cử chính), hoặc có chỉ dẫn như "khi cần", "khi đau", "khi sốt", hoặc không có lịch dùng cố định, PHẢI được xếp vào session "as_needed". Nếu một thuốc vừa có liều cố định vừa có hướng dẫn "khi cần", tách phần 'as_needed' thành mục riêng.
       3. Nếu là kết quả xét nghiệm (Lab Result): dùng module 'info_list'.
       4. Nếu là lời khuyên chung: dùng module 'text_block'.
       5. Luôn cung cấp 'summary_card' ở đầu.

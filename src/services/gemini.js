@@ -74,7 +74,7 @@ export const GeminiService = {
             // If type is text_block, data is just a string.
           }
         ],
-        "suggested_questions": ["Câu hỏi 1?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (min 4, max 4. QUAN TRỌNG: Đây là câu hỏi BỆNH NHÂN hỏi Bác sĩ. Ví dụ: "Tôi nên kiêng ăn gì?", "Bệnh này có lây không?". KHÔNG ĐƯỢC tạo câu hỏi bác sĩ hỏi bệnh nhân),
+        "suggested_questions": ["Câu hỏi 1?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (min 4, max 4. QUAN TRỌNG: Đây là câu hỏi BỆNH NHÂN hỏi Bác sĩ. Phải xưng 'Tôi' và gọi 'Bác sĩ'. Ví dụ: "Bác sĩ ơi, tôi nên kiêng ăn gì?", "Tôi uống thuốc này có bị mệt không?"),
         "speech_text": "A warm greeting and summary for Text-to-Speech."
       }
       
@@ -108,15 +108,20 @@ export const GeminiService = {
     }
 
     const prompt = `
+      Bạn là bác sĩ đang tư vấn cho bệnh nhân lớn tuổi.
       Cung cấp hướng dẫn chi tiết nhưng đơn giản cho thuốc "${drugName}" dành cho "${patientContext}".
-      Trả về một đối tượng JSON hợp lệ với cấu trúc sau:
+      
+      Yêu cầu:
+      1. Giọng văn ân cần, dễ hiểu, xưng hô Bác sĩ - Bác/Cô/Chú.
+      2. Trả về JSON:
       {
-        "summary": "A simple one-sentence explanation of what this drug does.",
-        "usage_guide": "Step-by-step guide on how to take it (e.g., before/after food, with water).",
-        "side_effects": ["Common side effect 1", "Common side effect 2"],
-        "lifestyle_advice": "One tip for lifestyle changes while taking this drug (e.g., drink water, avoid alcohol).",
-        "serious_warning": "One important warning (e.g., stop if rash appears).",
-        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về thuốc này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (LƯU Ý: Vai bệnh nhân lớn tuổi hỏi bác sĩ)
+        "summary": "Giải thích ngắn gọn công dụng thuốc (Ví dụ: Thuốc này giúp bác...)",
+        "usage_guide": "Hướng dẫn sử dụng chi tiết (Ví dụ: Bác hòa tan 1 viên vào nước...)",
+        "side_effects": ["Tác dụng phụ 1", "Tác dụng phụ 2"],
+        "lifestyle_advice": "Lời khuyên sống khỏe (Ví dụ: Bác nên uống nhiều nước...)",
+        "serious_warning": "Cảnh báo quan trọng (Ví dụ: Nếu bác thấy khó thở...)",
+        "suggested_questions": ["Câu hỏi 1", "Câu hỏi 2", "Câu hỏi 3", "Câu hỏi 4"] 
+        (QUAN TRỌNG: Đóng vai BỆNH NHÂN hỏi BÁC SĨ. Phải có từ 'Bác sĩ ơi' hoặc xưng 'Tôi'. Ví dụ: "Bác sĩ ơi, tôi uống thuốc này bao lâu thì đỡ?", "Tôi có được uống chung với sữa không?")
       }
       Chỉ trả về đối tượng JSON, không kèm định dạng markdown.
     `;
@@ -152,10 +157,14 @@ export const GeminiService = {
     const prompt = `
       Ngữ cảnh: ${context}
       Câu hỏi hiện tại: ${JSON.stringify(currentQuestions)}
-      Tạo đúng 4 câu hỏi mới, ngắn gọn, đơn giản, phù hợp cho người lớn tuổi về đơn thuốc hoặc chẩn đoán, không trùng với các câu hỏi hiện tại.
-      QUAN TRỌNG: Các câu hỏi này là do BỆNH NHÂN hỏi BÁC SĨ để hiểu thêm về bệnh tình.
-      Ví dụ ĐÚNG: "Tôi có được ăn trứng không?", "Uống thuốc này có mệt không?", "Khi nào tôi cần tái khám?".
-      Ví dụ SAI (Cấm): "Bác có bị tiểu đường không?", "Bác thấy trong người thế nào?".
+      Tạo đúng 4 câu hỏi mới mà bệnh nhân lớn tuổi thường hỏi bác sĩ về tình trạng này.
+      
+      Yêu cầu:
+      - Vai: Bệnh nhân hỏi Bác sĩ.
+      - Xưng hô: "Tôi" (bệnh nhân) - "Bác sĩ".
+      - Nội dung: Ngắn gọn, thực tế, dễ hiểu.
+      - Ví dụ: "Bác sĩ ơi, bệnh này có lây không?", "Tôi ăn cơm nếp được không bác sĩ?".
+      
       Trả về một mảng JSON gồm 4 chuỗi câu hỏi.
       Chỉ trả về mảng JSON, không thêm gì khác.
     `;
@@ -209,7 +218,7 @@ export const GeminiService = {
       )}
       Trả về một đối tượng JSON bằng tiếng Việt với:
       {
-        "summary": "Tóm tắt ngắn gọn (tối đa 2 câu) về tình trạng sức khỏe chung bằng tiếng Việt, giọng văn ân cần, dễ hiểu.",
+        "summary": "Tóm tắt ngắn gọn (tối đa 2 câu) về tình trạng sức khỏe chung bằng tiếng Việt, giọng văn ân cần, dễ hiểu (Xưng hô Bác sĩ - Bác).",
         "highlights": [
           { "title": "Tin tốt", "content": "Chỉ số nào tốt", "type": "green" },
           { "title": "Cần chú ý", "content": "Chỉ số nào bất thường", "type": "red" }
@@ -248,19 +257,19 @@ export const GeminiService = {
     }
 
     const prompt = `
-      Giải thích chỉ số xét nghiệm '${testName}: ${testValue}' cho người cao tuổi.
+      Bạn là bác sĩ. Giải thích chỉ số xét nghiệm '${testName}: ${testValue}' cho bệnh nhân cao tuổi.
       Ngữ cảnh: ${context}.
       
       Yêu cầu:
       1. Cực kỳ ngắn gọn (tối đa 3 dòng).
-      2. Dùng ngôn ngữ bình dân, dễ hiểu.
-      3. Sử dụng ký hiệu so sánh trực quan (ví dụ: Kết quả ${testValue} > Mức an toàn 100).
-      4. Kết luận ngay là Tốt hay Xấu.
+      2. Dùng ngôn ngữ bình dân, ân cần (Xưng hô Bác sĩ - Bác).
+      3. So sánh trực quan (ví dụ: Chỉ số của bác là ${testValue}, cao hơn mức bình thường là 100).
       
       Return a JSON object:
       {
-        "explanation": "Markdown text...",
-        "suggested_questions": ["Câu hỏi bệnh nhân thắc mắc về chỉ số này?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (min 4, max 4. Đóng vai bệnh nhân hỏi)
+        "explanation": "Lời giải thích (Markdown)...",
+        "suggested_questions": ["Câu hỏi 1", "Câu hỏi 2", "Câu hỏi 3", "Câu hỏi 4"] 
+        (QUAN TRỌNG: Vai bệnh nhân hỏi bác sĩ, xưng 'Tôi', gọi 'Bác sĩ'. Ví dụ: "Chỉ số này cao vậy có sao không bác sĩ?", "Tôi phải làm gì để giảm chỉ số này?")
       }
       Chỉ trả về JSON.
     `;
@@ -300,17 +309,19 @@ export const GeminiService = {
 
     let finalMessage = message;
     const systemInstruction = `
-      Bạn là trợ lý y tế ảo 'HealthBuddy' dành cho người lớn tuổi. 
-      Ngữ cảnh: ${context}
+      Bạn là bác sĩ ảo 'HealthBuddy' đang tư vấn cho bệnh nhân lớn tuổi.
+      Ngữ cảnh bệnh nhân: ${context}
       
       Yêu cầu:
-      1. Trả lời bằng Tiếng Việt, ngắn gọn, dễ hiểu, ân cần.
-      2. Nếu ngữ cảnh (context) rỗng hoặc không có thông tin bệnh lý, và người dùng hỏi về tình trạng sức khỏe của họ, hãy hướng dẫn họ chọn tính năng "Quét đơn thuốc" hoặc "Chụp kết quả" để bạn có dữ liệu tư vấn.
-      3. Trả về định dạng JSON:
+      1. Trả lời bằng Tiếng Việt, ngắn gọn, dễ hiểu, giọng văn ân cần, tôn trọng (gọi người dùng là Bác/Cô/Chú, xưng là Bác sĩ).
+      2. Nếu ngữ cảnh (context) rỗng và người dùng hỏi về bệnh lý cụ thể của họ, hãy khéo léo hướng dẫn họ dùng tính năng "Quét đơn thuốc" hoặc "Chụp kết quả" để bạn có thông tin chính xác.
+      
+      Trả về định dạng JSON:
       {
         "answer": "Nội dung trả lời (Markdown)...",
-        "suggested_questions": ["Câu hỏi tiếp theo bệnh nhân nên hỏi?", "Câu hỏi 2?", "Câu hỏi 3?", "Câu hỏi 4?"] (Tối đa 4 câu. Đóng vai bệnh nhân hỏi lại bác sĩ),
-        "action": "scan_prescription" (Nếu bạn khuyên người dùng quét đơn thuốc/kết quả xét nghiệm) hoặc null
+        "suggested_questions": ["Câu hỏi 1", "Câu hỏi 2", "Câu hỏi 3", "Câu hỏi 4"] 
+        (QUAN TRỌNG: Gợi ý câu hỏi để BỆNH NHÂN hỏi lại Bác sĩ. Phải có chủ ngữ 'Tôi' và gọi 'Bác sĩ'. Ví dụ: "Tôi bị đau lưng thì làm sao bác sĩ?", "Bác sĩ ơi, tôi ăn kiêng thế nào?"),
+        "action": "scan_prescription" (Nếu cần quét đơn/kết quả) hoặc null
       }
       Chỉ trả về JSON.
     `;

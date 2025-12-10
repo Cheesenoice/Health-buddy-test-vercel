@@ -2,27 +2,82 @@ import React, { useState, useRef, useEffect } from "react";
 import { X, Send, User, Bot, Mic, Volume2, ScanLine } from "lucide-react";
 import { GeminiService } from "../services/gemini";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "../context/AppContext";
+
+const GUIDANCE_MESSAGE =
+  "Chào bác! Hiện tại cháu chưa có thông tin đơn thuốc. Bác vui lòng quét đơn thuốc hoặc kết quả xét nghiệm để cháu tư vấn kỹ hơn nhé.";
 
 const ChatModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([
-    {
-      role: "model",
-      text: "Chào bác, bác cần hỏi gì về đơn thuốc hay sức khỏe ạ?",
-    },
-  ]);
+  const { prescription } = useApp();
+
+  const [messages, setMessages] = useState(() => {
+    if (prescription) {
+      return [
+        {
+          role: "model",
+          text: `Chào bác, cháu đã xem đơn thuốc ${
+            prescription.summary_card?.title || ""
+          }. Bác cần hỏi gì thêm không ạ?`,
+        },
+      ];
+    }
+    return [
+      {
+        role: "model",
+        text: GUIDANCE_MESSAGE,
+        action: "scan_prescription",
+      },
+    ];
+  });
+
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestedQuestions, setSuggestedQuestions] = useState([
-    "Thuốc này uống lúc nào tốt nhất?",
-    "Tôi có cần kiêng ăn gì không?",
-    "Tác dụng phụ của thuốc là gì?",
-  ]);
+
+  const [suggestedQuestions, setSuggestedQuestions] = useState(() => {
+    if (prescription && Array.isArray(prescription.suggested_questions)) {
+      return prescription.suggested_questions;
+    }
+    return [];
+  });
+
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Check for prescription update when modal opens
+  useEffect(() => {
+    if (isOpen && prescription) {
+      setMessages((prev) => {
+        // If currently showing guidance message (meaning no data was found previously),
+        // but now we have data, switch to the greeting message.
+        if (prev.length === 1 && prev[0].text === GUIDANCE_MESSAGE) {
+          return [
+            {
+              role: "model",
+              text: `Chào bác, cháu đã xem đơn thuốc ${
+                prescription.summary_card?.title || ""
+              }. Bác cần hỏi gì thêm không ạ?`,
+            },
+          ];
+        }
+        return prev;
+      });
+
+      // Also update suggested questions if they are missing
+      setSuggestedQuestions((prev) => {
+        if (
+          prev.length === 0 &&
+          Array.isArray(prescription.suggested_questions)
+        ) {
+          return prescription.suggested_questions;
+        }
+        return prev;
+      });
+    }
+  }, [isOpen, prescription]);
 
   useEffect(() => {
     scrollToBottom();
@@ -44,7 +99,15 @@ const ChatModal = ({ isOpen, onClose }) => {
         parts: [{ text: m.text }],
       }));
 
-      const response = await GeminiService.chat(userMsg, history);
+      // Prepare context from prescription data
+      const context = prescription
+        ? `Thông tin đơn thuốc/sức khỏe hiện tại của bệnh nhân: ${JSON.stringify(
+            prescription
+          )}`
+        : "";
+
+      // Pass context as the 3rd argument
+      const response = await GeminiService.chat(userMsg, history, context);
 
       // Fix: Extract answer if response is an object (e.g. { answer: "...", suggested_questions: [...] })
       let responseText = response;
